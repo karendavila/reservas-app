@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  node-app:
+    image: node 
+    container_name: node-app
+    working_dir: /app
+    volumes:
+      - ./backend/:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=mydb
+    command: bash -c "npm install && npm run dev" 
+
+  db:
+    image: postgres
+    container_name: postgres-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
