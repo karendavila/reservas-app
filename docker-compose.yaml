@@ -2,42 +2,44 @@ version: '3'
 
 services:
   node-app:
-    image: node 
+    image: node
     container_name: node-app
     working_dir: /app
     volumes:
       - ./backend/:/app
     ports:
-      - "3000:3000"
+      - '${PORT}:${PORT}' # Usando variable desde .env
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_DIALECT=${DB_DIALECT}
     depends_on:
       - db
-    environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=mydb
-    command: bash -c "npm install && npm run dev" 
+    command: bash -c "npm install && npm run dev"
 
   db:
     image: postgres
     container_name: postgres-db
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=mydb
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5432:5432"
+      - '${DB_PORT}:3000'
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      
+
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com   # Email para acceder a pgAdmin
-      PGADMIN_DEFAULT_PASSWORD: password       # Contraseña para acceder a pgAdmin
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL} # Email para acceder a pgAdmin
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD} # Contraseña para acceder a pgAdmin
     ports:
-      - "5050:80"
+      - '5050:80'
     depends_on:
       - db
 
