@@ -5,7 +5,20 @@ exports.createRoom = async (req, res) => {
     const newRoom = await Room.create(req.body);
     res.status(201).json(newRoom);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear la sala.' });
+    // Si el error es un error de validación de Sequelize
+    if (
+      ['SequelizeValidationError', 'SequelizeUniqueConstraintError'].includes(
+        error.name
+      )
+    ) {
+      // Formatear el mensaje de error
+      const validationErrors = error.errors.map(err => err.message);
+      res.status(400).json({ errors: validationErrors });
+    } else {
+      // Si es cualquier otro tipo de error
+      console.log(error);
+      res.status(500).json({ error: 'Error al crear la sala.' });
+    }
   }
 };
 

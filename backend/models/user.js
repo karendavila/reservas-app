@@ -54,6 +54,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false, // Campo obligatorio
       },
+      ci: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: true, // Campo obligatorio
+      },
       status: {
         type: DataTypes.BOOLEAN,
         allowNull: false, // Campo obligatorio
