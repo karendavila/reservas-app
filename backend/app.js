@@ -4,6 +4,7 @@ const app = express();
 const { sequelize } = require('./models');
 const userRoutes = require('./routes/userRoutes');
 const roomRoutes = require('./routes/roomRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 
 // Middleware para parsear JSON
 app.use(express.json());
@@ -11,6 +12,7 @@ app.use(express.json());
 // Montar las rutas
 app.use('/api', userRoutes);
 app.use('/api', roomRoutes);
+app.use('/api', eventRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

@@ -5,7 +5,10 @@ const bcrypt = require('bcrypt'); // Asumiendo que quieres encriptar las contras
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
-      // Aquí puedes definir las asociaciones si es necesario
+      User.hasMany(models.Event, {
+        foreignKey: 'userId',
+        as: 'events', // Alias para los eventos asociados
+      });
     }
 
     // Agregamos propiedades estáticas para roles
