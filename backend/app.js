@@ -1,10 +1,13 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const { sequelize } = require('./models');
 const userRoutes = require('./routes/userRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+
+app.use(cors());
 
 // Middleware para parsear JSON
 app.use(express.json());
