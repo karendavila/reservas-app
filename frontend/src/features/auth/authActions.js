@@ -67,3 +67,15 @@ export const refreshToken = () => async dispatch => {
     localStorage.clear();
   }
 };
+
+// Acción de cerrar sesión
+export const logoutUser = () => dispatch => {
+  // Eliminar los tokens de localStorage
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
+
+  // Despachar la acción de logout para limpiar el estado de Redux
+  dispatch(logout());
+
+  // Puedes redirigir al usuario a la página de login si lo deseas
+};

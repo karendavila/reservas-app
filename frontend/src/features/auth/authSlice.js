@@ -13,7 +13,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      state.user = action.payload.user;
+      state.user = action.payload.user.name;
       state.role = action.payload.role;
       state.token = action.payload.token;
       state.refreshToken = action.payload.refreshToken;
