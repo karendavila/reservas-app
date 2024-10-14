@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/auth/authActions';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+  const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const navigate = useNavigate(); // If you plan to redirect after login
 
@@ -18,10 +21,10 @@ const LoginPage = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-
-    // For now, we'll just display the entered data
-    console.log('Login data:', formData);
-    setMessage('Funcionalidad de inicio de sesión aún no implementada.');
+    dispatch(login(formData.email, formData.password));
+    // // For now, we'll just display the entered data
+    // console.log('Login data:', formData);
+    // setMessage('Funcionalidad de inicio de sesión aún no implementada.');
   };
 
   return (

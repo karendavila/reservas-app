@@ -39,4 +39,6 @@ router.delete(
 // Ruta para iniciar sesión
 router.post('/login', userController.login);
 
+router.post('/refresh-token', userController.refreshToken);
+
 module.exports = router;

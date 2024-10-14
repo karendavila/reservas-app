@@ -114,7 +114,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-// Iniciar sesión y generar JWT
+// Iniciar sesión y generar JWT + Refresh Token
 exports.login = async (req, res) => {
   try {
     let { email, password } = req.body;
@@ -130,16 +130,76 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Contraseña incorrecta.' });
     }
 
-    // Generar JWT
+    // Generar el token de acceso
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    res.status(200).json({ message: 'Inicio de sesión exitoso', token });
+    // Generar el refresh token
+    const refreshToken = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: '7d' } // Por ejemplo, 7 días
+    );
+
+    // Guardar el refresh token en la base de datos
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    res.status(200).json({
+      message: 'Inicio de sesión exitoso',
+      data: {
+        name: user.name,
+        role: user.role,
+        token,
+        refreshToken, // Enviamos el refresh token al cliente
+      },
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Error al iniciar sesión.' });
+  }
+};
+
+// Endpoint para renovar el token de acceso
+exports.refreshToken = async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(403).json({ error: 'Refresh token es requerido.' });
+  }
+
+  try {
+    // Verificar el refresh token
+    const user = await User.findOne({ where: { refreshToken } });
+    if (!user) {
+      return res.status(403).json({ error: 'Refresh token no es válido.' });
+    }
+
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err, decoded) => {
+        if (err) {
+          return res.status(403).json({ error: 'Refresh token ha expirado.' });
+        }
+
+        // Generar un nuevo token de acceso
+        const newAccessToken = jwt.sign(
+          { id: user.id, role: user.role },
+          process.env.JWT_SECRET,
+          { expiresIn: '1h' }
+        );
+
+        res.status(200).json({
+          token: newAccessToken,
+        });
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Error al renovar el token.' });
   }
 };

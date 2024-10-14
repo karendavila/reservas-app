@@ -66,6 +66,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         allowNull: false, // Campo obligatorio
       },
+      refreshToken: {
+        type: DataTypes.TEXT, // Puede ser STRING o TEXT dependiendo del tamaño del token
+        allowNull: true,
+      },
     },
     {
       sequelize,
