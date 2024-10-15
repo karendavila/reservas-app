@@ -11,8 +11,7 @@ const LoginPage = () => {
     password: '',
   });
   const dispatch = useDispatch();
-  const [message, setMessage] = useState('');
-  const navigate = useNavigate(); // If you plan to redirect after login
+  const navigate = useNavigate(); // Para redirigir después del login
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -21,7 +20,7 @@ const LoginPage = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    dispatch(login(formData.email, formData.password));
+    dispatch(login(formData.email, formData.password, navigate));
     // // For now, we'll just display the entered data
     // console.log('Login data:', formData);
     // setMessage('Funcionalidad de inicio de sesión aún no implementada.');
@@ -34,7 +33,6 @@ const LoginPage = () => {
         <h2 className="text-3xl font-bold mb-6 text-center">
           Inicio de Sesión
         </h2>
-        {message && <p className="text-blue-500 mb-4 text-center">{message}</p>}
         <form
           onSubmit={handleSubmit}
           className="max-w-md mx-auto bg-white p-6 rounded shadow"

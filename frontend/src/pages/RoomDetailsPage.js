@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useSelector } from 'react-redux'; // Para obtener el rol del usuario desde Redux
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeroSection from '../components/HeroSection';
@@ -12,6 +13,9 @@ const RoomDetailsPage = () => {
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+
+  // Obtener el rol del usuario desde Redux
+  const { role } = useSelector(state => state.auth);
 
   useEffect(() => {
     axios
@@ -105,18 +109,23 @@ const RoomDetailsPage = () => {
                     <strong>Encargado:</strong> {room.staffowner}
                   </li>
                 </ul>
-                <button
-                  onClick={handleUpdateClick}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
-                >
-                  Actualizar Sala
-                </button>
-                <button
-                  onClick={handleDeleteRoom}
-                  className="bg-red-600 text-white px-4 py-2 rounded"
-                >
-                  Eliminar Sala
-                </button>
+                {/* Mostrar los botones de "Actualizar" y "Eliminar" solo si el usuario es administrador */}
+                {role === 'admin' && (
+                  <>
+                    <button
+                      onClick={handleUpdateClick}
+                      className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
+                    >
+                      Actualizar Sala
+                    </button>
+                    <button
+                      onClick={handleDeleteRoom}
+                      className="bg-red-600 text-white px-4 py-2 rounded"
+                    >
+                      Eliminar Sala
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </>

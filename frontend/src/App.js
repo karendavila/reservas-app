@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import EventsPage from './pages/EventsPage';
 import EventDetailsPage from './pages/EventDetailsPage';
@@ -33,8 +38,8 @@ function App() {
     <Routes>
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/home" element={<HomePage />} />
       <Route path="/users" element={<UsersPage />} />
-      <Route path="/" element={<HomePage />} />
       <Route path="/events" element={<EventsPage />} />
       <Route path="/events/:id" element={<EventDetailsPage />} />
       <Route path="/rooms" element={<RoomsPage />} />
@@ -42,6 +47,9 @@ function App() {
       <Route path="/create-reservation" element={<CreateReservationPage />} />
       <Route path="/my-reservations" element={<UserReservationsPage />} />
       <Route path="/admin/reservations" element={<AdminReservationsPage />} />
+
+      {/* Ruta para manejar cualquier ruta no válida */}
+      <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   );
 }

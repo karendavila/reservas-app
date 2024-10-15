@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { loginSuccess, refreshAccessToken, logout } from './authSlice';
 import Swal from 'sweetalert2';
@@ -5,7 +6,7 @@ import Swal from 'sweetalert2';
 const API_URL = 'http://localhost:3000/api'; //  la URL de tu API
 
 // Acción para iniciar sesión
-export const login = (email, password) => async dispatch => {
+export const login = (email, password, navigate) => async dispatch => {
   try {
     const response = await axios.post(`${API_URL}/login`, {
       email,
@@ -21,14 +22,10 @@ export const login = (email, password) => async dispatch => {
     localStorage.setItem('isAuthenticated', true);
 
     // Actualizar el estado global con Redux
-    dispatch(loginSuccess({ user: { name, role }, token, refreshToken }));
-    // Mostrar SweetAlert de éxito
-    Swal.fire({
-      title: 'Inicio de sesión exitoso',
-      text: `Bienvenido, ${name}`,
-      icon: 'success',
-      confirmButtonText: 'Aceptar',
-    });
+    dispatch(loginSuccess({ name, role, token, refreshToken }));
+
+    // Redirigir al usuario a la vista de Home
+    navigate('/home');
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     // Mostrar SweetAlert de error

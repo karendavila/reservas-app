@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux'; // Para obtener el rol del usuario desde Redux
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SearchBar from '../components/SearchBar';
@@ -13,6 +14,9 @@ const EventsPage = () => {
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddEventForm, setShowAddEventForm] = useState(false); // State to control form visibility
+
+  // Obtener el rol del usuario desde Redux
+  const { role } = useSelector(state => state.auth);
 
   // Fetch events from the API
   useEffect(() => {
@@ -72,12 +76,15 @@ const EventsPage = () => {
       <div className="container mx-auto my-8">
         <div className="flex justify-between items-center">
           <SearchBar placeholder="Buscar eventos..." onSearch={handleSearch} />
-          <button
-            onClick={handleAddEvent}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            Añadir Evento
-          </button>
+          {/* Mostrar el botón de "Añadir Evento" solo si el usuario es administrador */}
+          {role === 'admin' && (
+            <button
+              onClick={handleAddEvent}
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Añadir Evento
+            </button>
+          )}
         </div>
         {showAddEventForm && (
           <AddEventForm onEventCreated={handleEventCreated} />
