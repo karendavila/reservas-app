@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import { useSelector } from 'react-redux'; // Para obtener el rol del usuario desde Redux
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -18,8 +18,8 @@ const RoomDetailsPage = () => {
   const { role } = useSelector(state => state.auth);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/rooms/${id}`)
+    axiosInstance
+      .get(`/rooms/${id}`)
       .then(response => {
         setRoom(response.data);
         setLoading(false);
@@ -41,8 +41,8 @@ const RoomDetailsPage = () => {
 
   const handleDeleteRoom = () => {
     if (window.confirm('¿Estás seguro de que deseas eliminar esta sala?')) {
-      axios
-        .delete(`http://localhost:3000/api/rooms/${room.id}`)
+      axiosInstance
+        .delete(`/rooms/${room.id}`)
         .then(() => {
           // Redirect to rooms list or another appropriate page
           navigate('/rooms');

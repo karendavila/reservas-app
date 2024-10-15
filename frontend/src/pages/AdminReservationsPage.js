@@ -1,111 +1,145 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const AdminReservationsPage = () => {
-  const [reservations, setReservations] = useState([]);
+  const [events, setEvents] = useState([]);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
+  // Obtener los eventos desde la API
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/api/reservations')
+    axiosInstance
+      .get('/events') // Llamada al endpoint de eventos
       .then(response => {
-        setReservations(response.data);
+        setEvents(response.data);
+        setLoading(false);
       })
       .catch(error => {
-        console.error('Error fetching reservations:', error);
-        setError('Error al obtener las reservas.');
+        console.error('Error fetching events:', error);
+        setError('Error al obtener los eventos.');
+        setLoading(false);
       });
   }, []);
 
-  // Aquí es donde debes colocar la función handleUpdateStatus
-  const handleUpdateStatus = (reservationId, newStatus) => {
+  // Función para actualizar el estado del evento
+  const handleUpdateStatus = (eventId, newStatus) => {
     if (
-      window.confirm(`¿Estás seguro de que deseas ${newStatus} esta reserva?`)
+      window.confirm(`¿Estás seguro de que deseas ${newStatus} este evento?`)
     ) {
-      axios
-        .put(`http://localhost:3000/api/reservations/${reservationId}`, {
-          status: newStatus,
-        })
+      axiosInstance
+        .put(`/events/${eventId}`, { status: newStatus })
         .then(response => {
-          // Actualiza la reserva en el estado
-          setReservations(
-            reservations.map(reservation =>
-              reservation.id === reservationId
-                ? { ...reservation, status: newStatus }
-                : reservation
+          // Actualiza el estado del evento en la lista
+          setEvents(
+            events.map(event =>
+              event.id === eventId ? { ...event, status: newStatus } : event
             )
           );
         })
         .catch(error => {
-          console.error('Error updating reservation status:', error);
+          console.error('Error updating event status:', error);
           alert(
-            'Error al actualizar el estado de la reserva. Por favor, intente nuevamente.'
+            'Error al actualizar el estado del evento. Por favor, intente nuevamente.'
           );
         });
     }
   };
+
+  if (loading) {
+    return (
+      <div>
+        <Header />
+        <div className="container mx-auto my-8">
+          <p>Cargando eventos...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div>
       <Header />
       <div className="container mx-auto my-8">
         <h2 className="text-3xl font-bold mb-6 text-center">
-          Todas las Reservas
+          Administrar Eventos
         </h2>
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
-        {reservations.length > 0 ? (
-          <table className="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">ID</th>
-                <th className="py-2 px-4 border-b">Nombre del Evento</th>
-                <th className="py-2 px-4 border-b">Usuario</th>
-                <th className="py-2 px-4 border-b">Fecha del Evento</th>
-                <th className="py-2 px-4 border-b">Estado</th>
-                {/* Otras columnas si es necesario */}
-                <th className="py-2 px-4 border-b">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reservations.map(reservation => (
-                <tr key={reservation.id}>
-                  <td className="py-2 px-4 border-b">{reservation.id}</td>
-                  <td className="py-2 px-4 border-b">{reservation.name}</td>
-                  <td className="py-2 px-4 border-b">
-                    {reservation.user?.name || 'N/A'}
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    {new Date(reservation.eventFrom).toLocaleString()} -{' '}
-                    {new Date(reservation.eventTo).toLocaleString()}
-                  </td>
-                  <td className="py-2 px-4 border-b">{reservation.status}</td>
-                  {/* Acciones */}
-                  <td className="py-2 px-4 border-b">
-                    <button
-                      onClick={() =>
-                        handleUpdateStatus(reservation.id, 'approved')
-                      }
-                      className="bg-green-600 text-white px-2 py-1 rounded mr-2"
-                    >
-                      Aprobar
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleUpdateStatus(reservation.id, 'denied')
-                      }
-                      className="bg-red-600 text-white px-2 py-1 rounded"
-                    >
-                      Denegar
-                    </button>
-                  </td>
+        {events.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+              <thead className="bg-blue-600 text-white">
+                <tr>
+                  <th className="py-3 px-6 text-left">ID</th>
+                  <th className="py-3 px-6 text-left">Nombre</th>
+                  <th className="py-3 px-6 text-left">Descripción</th>
+                  <th className="py-3 px-6 text-left">Comentarios</th>
+                  <th className="py-3 px-6 text-left">Capacidad</th>
+                  <th className="py-3 px-6 text-left">Costo</th>
+                  <th className="py-3 px-6 text-left">Contacto</th>
+                  <th className="py-3 px-6 text-left">Fecha del Evento</th>
+                  <th className="py-3 px-6 text-left">Reserva Desde - Hasta</th>
+                  <th className="py-3 px-6 text-left">Estado</th>
+                  <th className="py-3 px-6 text-left">Programa</th>
+                  <th className="py-3 px-6 text-left">Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {events.map(event => (
+                  <tr key={event.id} className="border-b">
+                    <td className="py-3 px-6">{event.id}</td>
+                    <td className="py-3 px-6">{event.name}</td>
+                    <td className="py-3 px-6">{event.description}</td>
+                    <td className="py-3 px-6">{event.comments || 'N/A'}</td>
+                    <td className="py-3 px-6">{event.capacity}</td>
+                    <td className="py-3 px-6">{event.cost}</td>
+                    <td className="py-3 px-6">{event.contact}</td>
+                    <td className="py-3 px-6">
+                      {new Date(event.eventFrom).toLocaleString()} -{' '}
+                      {new Date(event.eventTo).toLocaleString()}
+                    </td>
+                    <td className="py-3 px-6">
+                      {new Date(event.reservationFrom).toLocaleString()} -{' '}
+                      {new Date(event.reservationTo).toLocaleString()}
+                    </td>
+                    <td className="py-3 px-6">{event.status}</td>
+                    <td className="py-3 px-6">
+                      {event.programPath ? (
+                        <a
+                          href={event.programPath}
+                          className="text-blue-500 hover:underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Ver Programa
+                        </a>
+                      ) : (
+                        'N/A'
+                      )}
+                    </td>
+                    <td className="py-3 px-6">
+                      <button
+                        onClick={() => handleUpdateStatus(event.id, 'approved')}
+                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-2"
+                      >
+                        Aprobar
+                      </button>
+                      <button
+                        onClick={() => handleUpdateStatus(event.id, 'denied')}
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                      >
+                        Denegar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
-          <p className="text-center">No hay reservas.</p>
+          <p className="text-center">No hay eventos disponibles.</p>
         )}
       </div>
       <Footer />

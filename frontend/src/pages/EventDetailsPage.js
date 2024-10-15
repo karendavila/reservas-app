@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import { useSelector } from 'react-redux'; // Para obtener el rol del usuario desde Redux
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -18,8 +18,8 @@ const EventDetailsPage = () => {
   const { role } = useSelector(state => state.auth);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/events/${id}`)
+    axiosInstance
+      .get(`/events/${id}`)
       .then(response => {
         setEvent(response.data);
         setLoading(false);
@@ -41,8 +41,8 @@ const EventDetailsPage = () => {
 
   const handleDeleteEvent = () => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este evento?')) {
-      axios
-        .delete(`http://localhost:3000/api/events/${event.id}`)
+      axiosInstance
+        .delete(`/events/${event.id}`)
         .then(() => {
           // Redirect to events list or another appropriate page
           navigate('/events');

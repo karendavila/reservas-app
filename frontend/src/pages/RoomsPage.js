@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux'; // Para obtener el rol del usuario desde Redux
 import Header from '../components/Header';
@@ -20,8 +20,8 @@ const RoomsPage = () => {
 
   // Fetch rooms from the backend API
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/api/rooms')
+    axiosInstance
+      .get('/rooms')
       .then(response => {
         setRooms(response.data);
         setFilteredRooms(response.data);

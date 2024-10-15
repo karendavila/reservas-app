@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 
 const UpdateRoomForm = ({ room, onRoomUpdated }) => {
   const [formData, setFormData] = useState({
@@ -19,8 +19,8 @@ const UpdateRoomForm = ({ room, onRoomUpdated }) => {
   const handleSubmit = e => {
     e.preventDefault();
 
-    axios
-      .put(`http://localhost:3000/api/rooms/${room.id}`, formData)
+    axiosInstance
+      .put(`/rooms/${room.id}`, formData)
       .then(response => {
         // Handle success
         console.log('Room updated:', response.data);

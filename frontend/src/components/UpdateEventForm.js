@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 
 const UpdateEventForm = ({ event, onEventUpdated }) => {
   const [formData, setFormData] = useState({
@@ -18,8 +18,8 @@ const UpdateEventForm = ({ event, onEventUpdated }) => {
 
   // Fetch rooms to populate the dropdown
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/api/rooms')
+    axiosInstance
+      .get('/rooms')
       .then(response => {
         setRooms(response.data);
       })
@@ -36,8 +36,8 @@ const UpdateEventForm = ({ event, onEventUpdated }) => {
   const handleSubmit = e => {
     e.preventDefault();
 
-    axios
-      .put(`http://localhost:3000/api/events/${event.id}`, formData)
+    axiosInstance
+      .put(`/events/${event.id}`, formData)
       .then(response => {
         // Handle success
         console.log('Event updated:', response.data);

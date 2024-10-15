@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 
 const ReservationRequestForm = ({ onRequestCreated }) => {
   const [formData, setFormData] = useState({
@@ -56,15 +56,11 @@ const ReservationRequestForm = ({ onRequestCreated }) => {
       }
 
       // Send POST request to create the reservation request
-      const response = await axios.post(
-        'http://localhost:3000/api/reservations',
-        data,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const response = await axiosInstance.post('/reservations', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       // Handle success
       console.log('Reservation request created:', response.data);

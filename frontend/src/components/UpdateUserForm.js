@@ -1,6 +1,6 @@
 // src/components/UpdateUserForm.js
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 
 const UpdateUserForm = ({ user, onUserUpdated }) => {
   const [formData, setFormData] = useState({
@@ -22,8 +22,8 @@ const UpdateUserForm = ({ user, onUserUpdated }) => {
     e.preventDefault();
 
     // Send a PUT request to update the user
-    axios
-      .put(`http://localhost:3000/api/users/${user.id}`, formData)
+    axiosInstance
+      .put(`/users/${user.id}`, formData)
       .then(response => {
         // Handle success
         console.log('User updated:', response.data);

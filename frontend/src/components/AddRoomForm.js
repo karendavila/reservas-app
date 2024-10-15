@@ -1,6 +1,6 @@
 // src/components/AddRoomForm.js
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 
 const AddRoomForm = ({ onRoomCreated }) => {
   const [formData, setFormData] = useState({
@@ -20,8 +20,8 @@ const AddRoomForm = ({ onRoomCreated }) => {
   const handleSubmit = e => {
     e.preventDefault();
 
-    axios
-      .post('http://localhost:3000/api/rooms', formData)
+    axiosInstance
+      .post('/rooms', formData)
       .then(response => {
         // Handle success
         console.log('Room created:', response.data);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -11,8 +11,8 @@ const UserReservationsPage = () => {
     // Replace with actual user ID or token-based authentication
     const userId = 1; // This should come from authentication context
 
-    axios
-      .get(`http://localhost:3000/api/users/${userId}/reservations`)
+    axiosInstance
+      .get(`/users/${userId}/reservations`)
       .then(response => {
         setReservations(response.data);
       })

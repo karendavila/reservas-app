@@ -1,14 +1,13 @@
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../axiosConfig';
 import { loginSuccess, refreshAccessToken, logout } from './authSlice';
 import Swal from 'sweetalert2';
 
-const API_URL = 'http://localhost:3000/api'; //  la URL de tu API
+const API_URL = ''; //  la URL de tu API
 
 // Acción para iniciar sesión
 export const login = (email, password, navigate) => async dispatch => {
   try {
-    const response = await axios.post(`${API_URL}/login`, {
+    const response = await axiosInstance.post(`${API_URL}/login`, {
       email,
       password,
     });
@@ -48,7 +47,7 @@ export const refreshToken = () => async dispatch => {
       return;
     }
 
-    const response = await axios.post(`${API_URL}/refresh-token`, {
+    const response = await axiosInstance.post(`${API_URL}/refresh-token`, {
       refreshToken,
     });
     const { token: newToken } = response.data;

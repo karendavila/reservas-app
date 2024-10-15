@@ -1,6 +1,6 @@
 // src/pages/UsersPage.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import UpdateUserForm from '../components/UpdateUserForm';
@@ -12,8 +12,8 @@ const UsersPage = () => {
 
   useEffect(() => {
     // Fetch users from the backend API
-    axios
-      .get('http://localhost:3000/api/users')
+    axiosInstance
+      .get('/users')
       .then(response => {
         setUsers(response.data);
       })
@@ -25,8 +25,8 @@ const UsersPage = () => {
 
   const handleDeleteUser = userId => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      axios
-        .delete(`http://localhost:3000/api/users/${userId}`)
+      axiosInstance
+        .delete(`/users/${userId}`)
         .then(() => {
           // Remove user from list
           setUsers(users.filter(user => user.id !== userId));

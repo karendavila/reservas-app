@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 
 const AddEventForm = ({ onEventCreated }) => {
   const [formData, setFormData] = useState({
@@ -19,8 +19,8 @@ const AddEventForm = ({ onEventCreated }) => {
 
   // Fetch rooms to populate the dropdown
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/api/rooms')
+    axiosInstance
+      .get('/rooms')
       .then(response => {
         setRooms(response.data);
       })
@@ -39,8 +39,8 @@ const AddEventForm = ({ onEventCreated }) => {
     // Set default status if needed
     const data = { ...formData, status: 'pending' };
 
-    axios
-      .post('http://localhost:3000/api/events', data)
+    axiosInstance
+      .post('/events', data)
       .then(response => {
         // Handle success
         console.log('Event created:', response.data);

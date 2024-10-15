@@ -1,10 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import EventsPage from './pages/EventsPage';
 import EventDetailsPage from './pages/EventDetailsPage';
@@ -46,7 +41,7 @@ function App() {
       <Route path="/rooms/:id" element={<RoomDetailsPage />} />
       <Route path="/create-reservation" element={<CreateReservationPage />} />
       <Route path="/my-reservations" element={<UserReservationsPage />} />
-      <Route path="/admin/reservations" element={<AdminReservationsPage />} />
+      <Route path="/reservations" element={<AdminReservationsPage />} />
 
       {/* Ruta para manejar cualquier ruta no válida */}
       <Route path="*" element={<Navigate to="/home" replace />} />

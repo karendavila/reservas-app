@@ -49,12 +49,6 @@ const HomePage = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <MenuCard
-                title="Gestionar eventos"
-                description="Administra los eventos de la plataforma"
-                link="/events"
-                icon="📅"
-              />
-              <MenuCard
                 title="Gestionar espacios"
                 description="Configura y administra los espacios disponibles"
                 link="/rooms"
@@ -63,13 +57,13 @@ const HomePage = () => {
               <MenuCard
                 title="Gestionar reservas"
                 description="Revisa y gestiona las reservas de los usuarios"
-                link="/manage-reservations"
+                link="/reservations"
                 icon="📑"
               />
               <MenuCard
                 title="Consultar usuarios"
                 description="Revisa la lista de usuarios registrados"
-                link="/manage-users"
+                link="/users"
                 icon="👤"
               />
             </div>

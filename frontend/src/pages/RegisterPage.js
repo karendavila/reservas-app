@@ -1,6 +1,6 @@
 // src/pages/RegisterPage.js
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -25,8 +25,8 @@ const RegisterPage = () => {
     e.preventDefault();
 
     // Send a POST request to your backend API to create a new user
-    axios
-      .post('http://localhost:3000/api/users', formData)
+    axiosInstance
+      .post('/users', formData)
       .then(response => {
         // Handle success
         console.log('User registered:', response.data);

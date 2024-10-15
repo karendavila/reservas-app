@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux'; // Para obtener el rol del usuario desde Redux
 import Header from '../components/Header';
@@ -20,8 +20,8 @@ const EventsPage = () => {
 
   // Fetch events from the API
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/api/events')
+    axiosInstance
+      .get('/events')
       .then(response => {
         setEvents(response.data);
         setFilteredEvents(response.data);
