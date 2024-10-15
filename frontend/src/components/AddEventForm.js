@@ -14,6 +14,8 @@ const AddEventForm = ({ onEventCreated }) => {
     reservationTo: '',
     roomId: '', // The room ID to associate the event with
   });
+  const [programFile, setProgramFile] = useState(null);
+  const [agreementFile, setAgreementFile] = useState(null);
   const [error, setError] = useState('');
   const [rooms, setRooms] = useState([]);
 
@@ -34,39 +36,33 @@ const AddEventForm = ({ onEventCreated }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    // Set default status if needed
-    const data = { ...formData, status: 'pending' };
-
-    axiosInstance
-      .post('/events', data)
-      .then(response => {
-        // Handle success
-        console.log('Event created:', response.data);
-        onEventCreated(response.data);
-      })
-      .catch(error => {
-        // Handle error
-        console.error('Error creating event:', error);
-        setError('Error al crear el evento. Por favor, intente nuevamente.');
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.errors
-        ) {
-          // Display validation errors
-          setError(error.response.data.errors.join(', '));
-        }
-      });
+  const handleFileChange = e => {
+    const { name, files } = e.target;
+    if (name === 'programFile') {
+      setProgramFile(files[0]);
+    } else if (name === 'agreementFile') {
+      setAgreementFile(files[0]);
+    }
   };
+  const handleSubmit = async e => {
+    e.preventDefault();
 
+    try {
+      const response = await axiosInstance.post('/events', formData);
+      console.log('Evento creado:', response.data);
+      // Llamar a la función `onEventCreated` y pasarle los archivos
+      onEventCreated(response.data, programFile, agreementFile);
+    } catch (error) {
+      console.error('Error creating event:', error);
+      setError('Error al crear el evento. Por favor, intente nuevamente.');
+    }
+  };
   return (
     <div className="my-4">
       <h2 className="text-2xl font-bold mb-4">Crear Nuevo Evento</h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name */}
+        {/* Nombre del Evento */}
         <div>
           <label className="block">Nombre del Evento</label>
           <input
@@ -78,7 +74,7 @@ const AddEventForm = ({ onEventCreated }) => {
             required
           />
         </div>
-        {/* Description */}
+        {/* Descripción */}
         <div>
           <label className="block">Descripción</label>
           <textarea
@@ -88,7 +84,7 @@ const AddEventForm = ({ onEventCreated }) => {
             onChange={handleChange}
           ></textarea>
         </div>
-        {/* Capacity */}
+        {/* Capacidad */}
         <div>
           <label className="block">Capacidad</label>
           <input
@@ -100,7 +96,7 @@ const AddEventForm = ({ onEventCreated }) => {
             required
           />
         </div>
-        {/* Cost */}
+        {/* Costo */}
         <div>
           <label className="block">Costo</label>
           <input
@@ -112,7 +108,7 @@ const AddEventForm = ({ onEventCreated }) => {
             required
           />
         </div>
-        {/* Contact */}
+        {/* Contacto */}
         <div>
           <label className="block">Contacto</label>
           <input
@@ -124,7 +120,7 @@ const AddEventForm = ({ onEventCreated }) => {
             required
           />
         </div>
-        {/* Event From */}
+        {/* Fecha de Inicio del Evento */}
         <div>
           <label className="block">Inicio del Evento</label>
           <input
@@ -136,7 +132,7 @@ const AddEventForm = ({ onEventCreated }) => {
             required
           />
         </div>
-        {/* Event To */}
+        {/* Fecha de Fin del Evento */}
         <div>
           <label className="block">Fin del Evento</label>
           <input
@@ -148,7 +144,7 @@ const AddEventForm = ({ onEventCreated }) => {
             required
           />
         </div>
-        {/* Reservation From */}
+        {/* Inicio de la Reserva */}
         <div>
           <label className="block">Inicio de la Reserva</label>
           <input
@@ -160,7 +156,7 @@ const AddEventForm = ({ onEventCreated }) => {
             required
           />
         </div>
-        {/* Reservation To */}
+        {/* Fin de la Reserva */}
         <div>
           <label className="block">Fin de la Reserva</label>
           <input
@@ -172,7 +168,7 @@ const AddEventForm = ({ onEventCreated }) => {
             required
           />
         </div>
-        {/* Room ID */}
+        {/* Sala */}
         <div>
           <label className="block">Sala</label>
           <select
@@ -189,6 +185,25 @@ const AddEventForm = ({ onEventCreated }) => {
               </option>
             ))}
           </select>
+        </div>
+        {/* Subir Programa */}
+        <div>
+          <label className="block">Subir Programa</label>
+          <input
+            type="file"
+            name="programFile"
+            className="w-full border p-2"
+            onChange={handleFileChange}
+          />
+        </div>
+        <div>
+          <label className="block">Subir Contrato</label>
+          <input
+            type="file"
+            name="agreementFile"
+            className="w-full border p-2"
+            onChange={handleFileChange}
+          />
         </div>
         <button
           type="submit"

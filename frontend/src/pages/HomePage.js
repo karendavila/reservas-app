@@ -77,7 +77,7 @@ const HomePage = () => {
               <MenuCard
                 title="Solicitar reserva"
                 description="Reserva un espacio para tu evento"
-                link="/request-reservation"
+                link="/create-reservation"
                 icon="📝"
               />
               <MenuCard

@@ -9,12 +9,16 @@ router.get('/events', eventController.getAllEvents); // Obtener todos los evento
 router.get('/events/:eventId', eventController.getEventById); // Obtener un evento por ID
 router.put('/events/:eventId', eventController.updateEvent); // Actualizar un evento por ID
 router.delete('/events/:eventId', eventController.deleteEvent); // Eliminar un evento por ID
+router.get('/users/:userId/events', eventController.getEventsByUser); // Obtener eventos por usuario
 
-// Ruta para subir un archivo
+// Rutas para la subida de archivos después de la creación del evento
 router.post(
-  '/events/:eventId/upload-file',
-  upload.single('file'),
-  eventController.uploadFile
+  '/events/:eventId/upload-files',
+  upload.fields([
+    { name: 'programPath', maxCount: 1 },
+    { name: 'agreementPath', maxCount: 1 },
+  ]),
+  eventController.uploadFiles
 );
 
 module.exports = router;

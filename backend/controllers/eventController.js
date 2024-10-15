@@ -70,29 +70,51 @@ exports.deleteEvent = async (req, res) => {
 };
 
 // Controlador para subir archivos
-exports.uploadFile = async (req, res) => {
+exports.uploadFiles = async (req, res) => {
   try {
-    const event = await Event.findByPk(req.params.eventId);
+    const event = await Event.findByPk(req.params.eventId); // Buscar evento por ID
     if (!event) {
       return res.status(404).json({ error: 'Evento no encontrado.' });
     }
 
-    // Se diferencia entre los tipos de archivos, usando req.body.fileType
-    if (req.body.fileType === 'program') {
-      event.programPath = req.file.path; // Guardar la ruta del archivo del programa
-    } else if (req.body.fileType === 'agreement') {
-      event.agreementPath = req.file.path; // Guardar la ruta del archivo del acuerdo
-    } else {
-      return res.status(400).json({ error: 'Tipo de archivo no válido.' });
+    // Si se subieron los archivos, actualizar las rutas en el modelo
+    if (req.files?.programPath) {
+      event.programPath = req.files.programPath[0].path;
     }
-    await event.save();
+    if (req.files?.agreementPath) {
+      event.agreementPath = req.files.agreementPath[0].path;
+    }
 
-    res.status(200).json({
-      message: 'Archivo subido correctamente.',
-      filePath: req.file.path,
-    });
+    await event.save(); // Guardar cambios en el evento
+    res
+      .status(200)
+      .json({ message: 'Archivos subidos y evento actualizado', event });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: 'Error al subir el archivo.' });
+    res.status(500).json({ error: 'Error al subir los archivos.' });
+  }
+};
+
+// Obtener todos los eventos asociados a un usuario por userId
+exports.getEventsByUser = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const events = await Event.findAll({
+      where: { userId }, // Filtrar los eventos por userId
+    });
+
+    if (!events || events.length === 0) {
+      return res
+        .status(404)
+        .json({ error: 'No se encontraron eventos para este usuario.' });
+    }
+
+    res.status(200).json(events);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: 'Error al obtener los eventos del usuario.' });
   }
 };

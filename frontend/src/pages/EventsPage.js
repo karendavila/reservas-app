@@ -18,13 +18,17 @@ const EventsPage = () => {
   // Obtener el rol del usuario desde Redux
   const { role } = useSelector(state => state.auth);
 
-  // Fetch events from the API
+  // Fetch events from the API y filtrar solo los eventos aprobados
   useEffect(() => {
     axiosInstance
       .get('/events')
       .then(response => {
-        setEvents(response.data);
-        setFilteredEvents(response.data);
+        // Filtrar solo los eventos con estado "approved"
+        const approvedEvents = response.data.filter(
+          event => event.status === 'approved'
+        );
+        setEvents(approvedEvents);
+        setFilteredEvents(approvedEvents);
         setLoading(false);
       })
       .catch(error => {
@@ -45,12 +49,13 @@ const EventsPage = () => {
   };
 
   const handleEventCreated = newEvent => {
-    // Update the events list with the new event
-    const updatedEvents = [...events, newEvent];
-    setEvents(updatedEvents);
-    setFilteredEvents(updatedEvents);
+    // Actualizar la lista de eventos solo si el evento creado está aprobado
+    if (newEvent.status === 'approved') {
+      const updatedEvents = [...events, newEvent];
+      setEvents(updatedEvents);
+      setFilteredEvents(updatedEvents);
+    }
     setShowAddEventForm(false);
-    // Optionally, display a success message to the user
   };
 
   if (loading) {
