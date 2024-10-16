@@ -1,3 +1,4 @@
+// src/pages/RoomDetailsPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
@@ -44,7 +45,7 @@ const RoomDetailsPage = () => {
       axiosInstance
         .delete(`/rooms/${room.id}`)
         .then(() => {
-          // Redirect to rooms list or another appropriate page
+          // Redirigir a la lista de salas u otra página apropiada
           navigate('/rooms');
         })
         .catch(error => {
@@ -81,7 +82,12 @@ const RoomDetailsPage = () => {
   return (
     <div>
       <Header />
-      <HeroSection title={room.name} backgroundImage={room.image} />
+      <HeroSection
+        title={room.name}
+        backgroundImage={
+          room.imagePath ? `http://localhost:3000/${room.imagePath}` : null
+        }
+      />
       <div className="container mx-auto my-8">
         {showUpdateForm ? (
           <UpdateRoomForm room={room} onRoomUpdated={handleRoomUpdated} />
@@ -90,7 +96,11 @@ const RoomDetailsPage = () => {
             <div className="flex flex-col md:flex-row">
               <div className="md:w-1/2">
                 <img
-                  src={room.image || 'https://via.placeholder.com/600x400'}
+                  src={
+                    room.imagePath
+                      ? `http://localhost:3000/${room.imagePath}`
+                      : 'https://via.placeholder.com/600x400'
+                  }
                   alt={room.name}
                   className="w-full h-auto"
                 />

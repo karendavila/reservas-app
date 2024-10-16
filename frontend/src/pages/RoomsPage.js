@@ -94,7 +94,11 @@ const RoomsPage = () => {
                   className="border rounded-lg overflow-hidden"
                 >
                   <img
-                    src={room.image || 'https://via.placeholder.com/600x400'}
+                    src={
+                      room.imagePath
+                        ? `http://localhost:3000/${room.imagePath}`
+                        : 'https://via.placeholder.com/600x400'
+                    }
                     alt={room.name}
                     className="w-full h-48 object-cover"
                   />

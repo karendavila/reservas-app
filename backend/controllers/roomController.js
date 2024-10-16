@@ -1,8 +1,16 @@
 const { Room, User } = require('../models');
+const path = require('path');
 
 exports.createRoom = async (req, res) => {
   try {
-    const newRoom = await Room.create(req.body);
+    let roomData = req.body;
+
+    // Si se subió una imagen, agregar la ruta a los datos
+    if (req.file) {
+      roomData.imagePath = req.file.path;
+    }
+
+    const newRoom = await Room.create(roomData);
     res.status(201).json(newRoom);
   } catch (error) {
     // Si el error es un error de validación de Sequelize
@@ -16,7 +24,7 @@ exports.createRoom = async (req, res) => {
       res.status(400).json({ errors: validationErrors });
     } else {
       // Si es cualquier otro tipo de error
-      console.log(error);
+      console.error(error);
       res.status(500).json({ error: 'Error al crear la sala.' });
     }
   }
@@ -46,16 +54,20 @@ exports.getRoomById = async (req, res) => {
 
 exports.updateRoom = async (req, res) => {
   try {
-    const [updated] = await Room.update(req.body, {
-      where: { id: req.params.id },
-    });
-    if (updated) {
-      const updatedRoom = await Room.findByPk(req.params.id);
-      res.status(200).json(updatedRoom);
-    } else {
-      res.status(404).json({ error: 'Sala no encontrada.' });
+    const room = await Room.findByPk(req.params.id);
+    if (!room) {
+      return res.status(404).json({ error: 'Sala no encontrada.' });
     }
+
+    // Si se subió una nueva imagen, actualizar la ruta
+    if (req.file) {
+      req.body.imagePath = req.file.path;
+    }
+
+    await room.update(req.body);
+    res.status(200).json(room);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Error al actualizar la sala.' });
   }
 };

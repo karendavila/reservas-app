@@ -1,7 +1,6 @@
 // src/components/AddRoomForm.jsx
 import React, { useState } from 'react';
 import axiosInstance from '../axiosConfig';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate para redirección
 
 const AddRoomForm = ({ onRoomCreated }) => {
   const [formData, setFormData] = useState({
@@ -11,29 +10,50 @@ const AddRoomForm = ({ onRoomCreated }) => {
     location: '',
     staffowner: '',
   });
+  const [imageFile, setImageFile] = useState(null); // Nuevo estado para la imagen
   const [error, setError] = useState('');
-
-  const navigate = useNavigate(); // Inicializar useNavigate
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleImageChange = e => {
+    setImageFile(e.target.files[0]);
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
 
+    const data = new FormData();
+    // Agregar los campos del formulario al FormData
+    Object.keys(formData).forEach(key => {
+      data.append(key, formData[key]);
+    });
+    // Agregar el archivo de imagen
+    if (imageFile) {
+      data.append('image', imageFile);
+    }
+
     axiosInstance
-      .post('/rooms', formData)
+      .post('/rooms', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       .then(response => {
         console.log('Espacio creado:', response.data);
         onRoomCreated(response.data);
-        // Redirigir a la página de inicio después de crear la sala
-        navigate('/');
       })
       .catch(error => {
         console.error('Error al crear el espacio:', error);
-        setError('Error al crear el espacio. Por favor, intente nuevamente.');
+
+        const errorMessage =
+          error.response?.data?.error ||
+          error.response?.data?.errors?.join(', ') ||
+          'Error al crear el espacio. Por favor, intente nuevamente.';
+
+        setError(errorMessage);
       });
   };
 
@@ -120,6 +140,19 @@ const AddRoomForm = ({ onRoomCreated }) => {
               value={formData.staffowner}
               onChange={handleChange}
               required
+            />
+          </div>
+          {/* Campo para subir imagen */}
+          <div className="mt-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              Imagen del Espacio
+            </label>
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="w-full"
             />
           </div>
         </div>

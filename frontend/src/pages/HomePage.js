@@ -44,7 +44,7 @@ const HomePage = () => {
               <MenuCard
                 title="Gestionar espacios"
                 description="Configura y administra los espacios disponibles"
-                link="/rooms"
+                link="/admin/rooms"
                 icon="🏠"
               />
               <MenuCard

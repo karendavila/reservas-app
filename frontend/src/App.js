@@ -11,6 +11,7 @@ import UsersPage from './pages/UsersPage';
 import CreateReservationPage from './pages/CreateReservationPage';
 import UserReservationsPage from './pages/UserReservationsPage';
 import AdminReservationsPage from './pages/AdminReservationsPage';
+import AdminRoomsPage from './pages/AdminRoomsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useDispatch } from 'react-redux';
 import { refreshToken } from './features/auth/authActions';
@@ -77,6 +78,15 @@ function App() {
           element={
             <ProtectedRoute adminOnly={true}>
               <UsersPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/rooms"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <AdminRoomsPage />
             </ProtectedRoute>
           }
         />
