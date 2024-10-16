@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import SearchBar from '../components/SearchBar';
 import HeroSection from '../components/HeroSection';
 import AddRoomForm from '../components/AddRoomForm';
-import backgroundImage from '../assets/background.jpeg';
+import backgroundImage from '../assets/ucvfondo.jpg';
 
 const RoomsPage = () => {
   const [rooms, setRooms] = useState([]);
@@ -58,7 +58,7 @@ const RoomsPage = () => {
       <div>
         <Header />
         <div className="container mx-auto my-8">
-          <p>Cargando salas...</p>
+          <p>Cargando espacios...</p>
         </div>
         <Footer />
       </div>
@@ -83,7 +83,7 @@ const RoomsPage = () => {
               onClick={handleAddRoom}
               className="bg-blue-600 text-white px-4 py-2 rounded"
             >
-              Añadir Sala
+              Añadir Espacio
             </button>
           )}
         </div>

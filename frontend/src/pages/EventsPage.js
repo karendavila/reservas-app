@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import SearchBar from '../components/SearchBar';
 import HeroSection from '../components/HeroSection';
 import AddEventForm from '../components/AddEventForm';
-import backgroundImage from '../assets/background.jpeg';
+import backgroundImage from '../assets/ucvfondo.jpg';
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]);

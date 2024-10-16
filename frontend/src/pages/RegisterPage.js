@@ -1,50 +1,54 @@
-// src/pages/RegisterPage.js
 import React, { useState } from 'react';
 import axiosInstance from '../axiosConfig';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/auth/authActions';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
-    role: 'user', // Default role
+    role: 'user', // Valor predeterminado para el rol (usuario)
     name: '',
     email: '',
     password: '',
     ci: '',
-    status: true, // Default status
+    status: true, // Valor predeterminado para el estado (activo)
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleChange = e => {
-    const { name, value, type, checked } = e.target;
-    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = e => {
     e.preventDefault();
 
-    // Send a POST request to your backend API to create a new user
+    // Enviar la solicitud POST a la API backend para crear un nuevo usuario
     axiosInstance
       .post('/users', formData)
       .then(response => {
-        // Handle success
-        console.log('User registered:', response.data);
-        setSuccess('Usuario registrado exitosamente.');
-        setError('');
-        // Clear the form
-        setFormData({
-          role: 'user',
-          name: '',
-          email: '',
-          password: '',
-          ci: '',
-          status: true,
+        console.log('Usuario registrado:', response.data);
+        // Mostrar SweetAlert de éxito
+        Swal.fire({
+          title: 'Registro Exitoso',
+          text: 'Tu cuenta ha sido creada exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Continuar',
+        }).then(() => {
+          // Autenticar al usuario automáticamente y redirigir
+          dispatch(login(formData.email, formData.password, navigate));
         });
       })
       .catch(error => {
-        // Handle error
-        console.error('Error registering user:', error);
+        // Manejar error
+        console.error('Error al registrar el usuario:', error);
         setError(
           error.response?.data?.error ||
             'Error al registrar el usuario. Por favor, intente nuevamente.'
@@ -66,20 +70,6 @@ const RegisterPage = () => {
           onSubmit={handleSubmit}
           className="max-w-md mx-auto bg-white p-6 rounded shadow"
         >
-          {/* Role */}
-          <div className="mb-4">
-            <label className="block mb-1 font-semibold">Rol</label>
-            <select
-              name="role"
-              className="w-full border p-2 rounded"
-              value={formData.role}
-              onChange={handleChange}
-              required
-            >
-              <option value="user">Usuario</option>
-              <option value="admin">Administrador</option>
-            </select>
-          </div>
           {/* Name */}
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Nombre</label>
@@ -128,19 +118,6 @@ const RegisterPage = () => {
               value={formData.ci}
               onChange={handleChange}
             />
-          </div>
-          {/* Status */}
-          <div className="mb-4 flex items-center">
-            <input
-              type="checkbox"
-              name="status"
-              checked={formData.status}
-              onChange={handleChange}
-              className="mr-2"
-            />
-            <label className="font-semibold">
-              {formData.status ? 'Activo' : 'Inactivo'}
-            </label>
           </div>
           <button
             type="submit"

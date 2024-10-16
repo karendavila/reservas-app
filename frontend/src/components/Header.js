@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux'; // Importar Redux hooks
 import { logoutUser } from '../features/auth/authActions'; // Acción de cerrar sesión
 
-import ucvlogo from '../assets/ucvlogo1.png'; // Update the path to your logo
+import ucvlogo from '../assets/ucvlogo1.png'; // Actualizar la ruta al logo
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -20,30 +20,34 @@ const Header = () => {
   };
 
   return (
-    <nav className="bg-blue-800 p-4">
+    <nav className="bg-[#3969B1] p-4">
+      {' '}
+      {/* Cambia el fondo al color azul #3969B1 */}
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center">
           <img src={ucvlogo} alt="Logo" className="h-10 mr-2" />
-          <span className="text-white text-xl font-bold">UCV Events</span>
+          <span className="text-white text-xl font-bold">
+            Universidad Central de Venezuela
+          </span>
         </div>
 
         {/* Menu */}
         <div className="hidden md:flex space-x-4">
-          <Link to="/home" className="text-white hover:text-gray-300">
-            Home
-          </Link>
+          {/* Links que siempre se muestran */}
           <Link to="/events" className="text-white hover:text-gray-300">
-            Events
+            Eventos
           </Link>
           <Link to="/rooms" className="text-white hover:text-gray-300">
-            Rooms
+            Espacios
           </Link>
 
-          {/* Mostrar el nombre del usuario si está autenticado o el botón de Login */}
+          {/* Mostrar links según el estado de autenticación */}
           {isAuthenticated ? (
             <>
-              <span className="text-white">Bienvenido, {user}</span>
+              <Link to="/home" className="text-white hover:text-gray-300">
+                Panel
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-white hover:text-gray-300 ml-4"
@@ -53,7 +57,7 @@ const Header = () => {
             </>
           ) : (
             <Link to="/login" className="text-white hover:text-gray-300">
-              Login
+              Iniciar Sesión
             </Link>
           )}
         </div>
@@ -66,44 +70,44 @@ const Header = () => {
           ☰
         </button>
       </div>
-
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-blue-700">
-          <Link
-            to="/home"
-            className="block px-4 py-2 text-white hover:bg-blue-600"
-          >
-            Home
-          </Link>
+        <div className="md:hidden bg-[#3969B1]">
           <Link
             to="/events"
             className="block px-4 py-2 text-white hover:bg-blue-600"
           >
-            Events
+            Eventos
           </Link>
           <Link
             to="/rooms"
             className="block px-4 py-2 text-white hover:bg-blue-600"
           >
-            Rooms
+            Espacios
           </Link>
 
-          {/* Mostrar el nombre del usuario o el botón de Login en el menú móvil */}
+          {/* Mostrar el enlace "Home" y "Cerrar Sesión" solo si está autenticado */}
           {isAuthenticated ? (
             <>
-              <span className="text-white">Bienvenido, {user}</span>{' '}
-              {/* user debe ser solo el nombre */}
+              <Link
+                to="/home"
+                className="block px-4 py-2 text-white hover:bg-blue-600"
+              >
+                Panel
+              </Link>
               <button
                 onClick={handleLogout}
-                className="text-white hover:text-gray-300 ml-4"
+                className="block px-4 py-2 text-white hover:bg-blue-600"
               >
                 Cerrar Sesión
               </button>
             </>
           ) : (
-            <Link to="/login" className="text-white hover:text-gray-300">
-              Login
+            <Link
+              to="/login"
+              className="block px-4 py-2 text-white hover:bg-blue-600"
+            >
+              Iniciar Seción
             </Link>
           )}
         </div>

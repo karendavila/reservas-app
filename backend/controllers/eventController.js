@@ -4,7 +4,12 @@ const upload = require('../middlewares/eventFileUploadMiddleware');
 // Crear un nuevo evento (Create)
 exports.createEvent = async (req, res) => {
   try {
-    const newEvent = await Event.create(req.body);
+    const eventData = {
+      ...req.body,
+      status: Event.STATUS.PENDING,
+      userId: req.user.id,
+    };
+    const newEvent = await Event.create(eventData);
     res.status(201).json(newEvent); // Responder con el nuevo evento creado
   } catch (error) {
     console.error(error);
@@ -41,6 +46,11 @@ exports.getEventById = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   try {
     const event = await Event.findByPk(req.params.eventId); // Buscar el evento por ID
+    if (req.user.role == User.ROLES.USER && event.userId != req.user.id) {
+      return res
+        .status(403)
+        .json({ message: 'No tienes permisos para realizar esta acción' });
+    }
     if (!event) {
       return res.status(404).json({ error: 'Evento no encontrado.' });
     }
@@ -57,6 +67,11 @@ exports.updateEvent = async (req, res) => {
 exports.deleteEvent = async (req, res) => {
   try {
     const event = await Event.findByPk(req.params.eventId); // Buscar el evento por ID
+    if (req.user.role == User.ROLES.USER && event.userId != req.user.id) {
+      return res
+        .status(403)
+        .json({ message: 'No tienes permisos para realizar esta acción' });
+    }
     if (!event) {
       return res.status(404).json({ error: 'Evento no encontrado.' });
     }
@@ -97,8 +112,8 @@ exports.uploadFiles = async (req, res) => {
 
 // Obtener todos los eventos asociados a un usuario por userId
 exports.getEventsByUser = async (req, res) => {
-  const { userId } = req.params;
-
+  console.log(req.user);
+  const userId = req.user.id;
   try {
     const events = await Event.findAll({
       where: { userId }, // Filtrar los eventos por userId

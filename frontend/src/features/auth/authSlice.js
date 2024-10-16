@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  userId: localStorage.getItem('userId'),
   user: localStorage.getItem('user'),
   role: localStorage.getItem('role'),
   token: localStorage.getItem('token'),
@@ -14,7 +13,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      state.userId = action.payload.userId;
       state.user = action.payload.name;
       state.role = action.payload.role;
       state.token = action.payload.token;

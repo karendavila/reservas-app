@@ -6,7 +6,7 @@ require('dotenv').config();
 // Controlador para crear un usuario normal
 exports.createUser = async (req, res) => {
   try {
-    let { name, email, password } = req.body;
+    let { name, email, password, ci } = req.body;
     email = email.toLowerCase();
 
     // Verificar si el correo ya está registrado
@@ -20,6 +20,7 @@ exports.createUser = async (req, res) => {
       name,
       email,
       password,
+      ci,
     });
 
     res.status(201).json(newUser);
@@ -151,7 +152,6 @@ exports.login = async (req, res) => {
     res.status(200).json({
       message: 'Inicio de sesión exitoso',
       data: {
-        userId: user.id,
         name: user.name,
         role: user.role,
         token,

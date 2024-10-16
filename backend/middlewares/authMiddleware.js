@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-function protect(req, res, next) {
+async function protect(req, res, next) {
   let token;
 
   if (

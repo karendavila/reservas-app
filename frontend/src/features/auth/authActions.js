@@ -11,10 +11,10 @@ export const login = (email, password, navigate) => async dispatch => {
       email,
       password,
     });
-    const { token, refreshToken, name, role, userId } = response.data.data;
+    const { token, refreshToken, name, role } = response.data.data;
 
     // Guardar tokens en localStorage
-    localStorage.setItem('userId', userId);
+
     localStorage.setItem('user', name);
     localStorage.setItem('role', role);
     localStorage.setItem('token', token);
@@ -22,7 +22,7 @@ export const login = (email, password, navigate) => async dispatch => {
     localStorage.setItem('isAuthenticated', true);
 
     // Actualizar el estado global con Redux
-    dispatch(loginSuccess({ userId, name, role, token, refreshToken }));
+    dispatch(loginSuccess({ name, role, token, refreshToken }));
 
     // Redirigir al usuario a la vista de Home
     navigate('/home');
@@ -68,8 +68,11 @@ export const refreshToken = () => async dispatch => {
 // Acción de cerrar sesión
 export const logoutUser = () => dispatch => {
   // Eliminar los tokens de localStorage
+  localStorage.removeItem('user');
+  localStorage.removeItem('role');
   localStorage.removeItem('token');
   localStorage.removeItem('refreshToken');
+  localStorage.removeItem('isAuthenticated');
 
   // Despachar la acción de logout para limpiar el estado de Redux
   dispatch(logout());

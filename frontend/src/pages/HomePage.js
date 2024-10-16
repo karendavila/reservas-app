@@ -6,14 +6,14 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeroSection from '../components/HeroSection';
 
-import backgroundImage from '../assets/background.jpeg';
+import backgroundImage from '../assets/ucvfondo.jpg';
 
 const HomePage = () => {
   const { user, role, isAuthenticated } = useSelector(state => {
     console.log('state', state);
     return state.auth;
   }); // Obtener el usuario y su rol del estado global
-  console.log('role', role);
+
   const navigate = useNavigate();
 
   useEffect(() => {

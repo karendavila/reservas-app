@@ -11,6 +11,7 @@ import UsersPage from './pages/UsersPage';
 import CreateReservationPage from './pages/CreateReservationPage';
 import UserReservationsPage from './pages/UserReservationsPage';
 import AdminReservationsPage from './pages/AdminReservationsPage';
+import ProtectedRoute from './components/ProtectedRoute';
 import { useDispatch } from 'react-redux';
 import { refreshToken } from './features/auth/authActions';
 
@@ -34,14 +35,49 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/home" element={<HomePage />} />
-      <Route path="/users" element={<UsersPage />} />
+
+      {/* Rutas públicas */}
       <Route path="/events" element={<EventsPage />} />
       <Route path="/events/:id" element={<EventDetailsPage />} />
       <Route path="/rooms" element={<RoomsPage />} />
       <Route path="/rooms/:id" element={<RoomDetailsPage />} />
-      <Route path="/create-reservation" element={<CreateReservationPage />} />
-      <Route path="/my-reservations" element={<UserReservationsPage />} />
-      <Route path="/reservations" element={<AdminReservationsPage />} />
+
+      {/* Rutas protegidas solo para autenticados */}
+      <Route
+        path="/create-reservation"
+        element={
+          <ProtectedRoute>
+            <CreateReservationPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/my-reservations"
+        element={
+          <ProtectedRoute>
+            <UserReservationsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Rutas protegidas solo para administradores */}
+      <Route
+        path="/reservations"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminReservationsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <UsersPage />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Ruta para manejar cualquier ruta no válida */}
       <Route path="*" element={<Navigate to="/home" replace />} />
