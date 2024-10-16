@@ -1,4 +1,4 @@
-const { Event } = require('../models');
+const { Event, User } = require('../models');
 const upload = require('../middlewares/eventFileUploadMiddleware');
 
 // Crear un nuevo evento (Create)

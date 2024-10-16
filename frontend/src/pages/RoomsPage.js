@@ -1,7 +1,8 @@
+// src/pages/RoomsPage.jsx
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../axiosConfig';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux'; // Para obtener el rol del usuario desde Redux
+import { useSelector } from 'react-redux';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SearchBar from '../components/SearchBar';
@@ -50,68 +51,68 @@ const RoomsPage = () => {
     setRooms(updatedRooms);
     setFilteredRooms(updatedRooms);
     setShowAddRoomForm(false);
-    // Optionally, display a success message to the user
+    // Opcionalmente, mostrar un mensaje de éxito al usuario
   };
-
-  if (loading) {
-    return (
-      <div>
-        <Header />
-        <div className="container mx-auto my-8">
-          <p>Cargando espacios...</p>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div>
       <Header />
       <HeroSection
-        title="Salas"
-        subtitle="Explora las salas disponibles"
+        title="Espacios"
+        subtitle="Explora los espacios disponibles"
         backgroundImage={backgroundImage}
       />
-      <div className="container mx-auto my-8">
-        <div className="flex justify-between items-center">
-          <SearchBar placeholder="Buscar salas..." onSearch={handleSearch} />
-
-          {/* Mostrar el botón de "Añadir Sala" solo si el usuario es administrador */}
-          {role === 'admin' && (
-            <button
-              onClick={handleAddRoom}
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Añadir Espacio
-            </button>
-          )}
-        </div>
-
-        {/* Formulario para añadir salas */}
-        {showAddRoomForm && <AddRoomForm onRoomCreated={handleRoomCreated} />}
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          {filteredRooms.map(room => (
-            <div key={room.id} className="border rounded-lg overflow-hidden">
-              <img
-                src={room.image || 'https://via.placeholder.com/600x400'}
-                alt={room.name}
-                className="w-full h-48 object-cover"
+      <div className="container mx-auto my-8 px-4">
+        {/* Renderizado condicional */}
+        {showAddRoomForm ? (
+          // Mostrar solo el formulario
+          <AddRoomForm onRoomCreated={handleRoomCreated} />
+        ) : (
+          // Mostrar el buscador, el botón y las tarjetas
+          <>
+            <div className="flex justify-between items-center">
+              <SearchBar
+                placeholder="Buscar espacios..."
+                onSearch={handleSearch}
               />
-              <div className="p-4">
-                <h2 className="text-xl font-bold">{room.name}</h2>
-                <p className="mt-2 text-gray-600">{room.description}</p>
-                <Link
-                  to={`/rooms/${room.id}`}
-                  className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded"
+
+              {/* Mostrar el botón de "Añadir Sala" solo si el usuario es administrador */}
+              {role === 'admin' && (
+                <button
+                  onClick={handleAddRoom}
+                  className="bg-blue-600 text-white px-4 py-2 rounded"
                 >
-                  Ver Detalles
-                </Link>
-              </div>
+                  Añadir Espacio
+                </button>
+              )}
             </div>
-          ))}
-        </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+              {filteredRooms.map(room => (
+                <div
+                  key={room.id}
+                  className="border rounded-lg overflow-hidden"
+                >
+                  <img
+                    src={room.image || 'https://via.placeholder.com/600x400'}
+                    alt={room.name}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4">
+                    <h2 className="text-xl font-bold">{room.name}</h2>
+                    <p className="mt-2 text-gray-600">{room.description}</p>
+                    <Link
+                      to={`/rooms/${room.id}`}
+                      className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded"
+                    >
+                      Ver Detalles
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
       <Footer />
     </div>

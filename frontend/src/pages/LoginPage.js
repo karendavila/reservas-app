@@ -29,8 +29,8 @@ const LoginPage = () => {
   return (
     <div>
       <Header />
-      <div className="container mx-auto my-8">
-        <h2 className="text-3xl font-bold mb-6 text-center">
+      <div className="container mx-auto my-24">
+        <h2 className="text-3xl font-bold mb-8 text-center">
           Inicio de Sesión
         </h2>
         <form

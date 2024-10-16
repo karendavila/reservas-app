@@ -9,10 +9,7 @@ import HeroSection from '../components/HeroSection';
 import backgroundImage from '../assets/ucvfondo.jpg';
 
 const HomePage = () => {
-  const { user, role, isAuthenticated } = useSelector(state => {
-    console.log('state', state);
-    return state.auth;
-  }); // Obtener el usuario y su rol del estado global
+  const { user, role, isAuthenticated } = useSelector(state => state.auth); // Obtener el usuario y su rol del estado global
 
   const navigate = useNavigate();
 
@@ -31,23 +28,19 @@ const HomePage = () => {
     <div>
       <Header />
       <HeroSection
-        title="Bienvenido"
-        subtitle="Descubre eventos y salas disponibles"
+        title={`Bienvenido, ${user}`} // Muestra el nombre del usuario en el HeroSection
+        subtitle="En este panel encontrarás tu opciones"
         backgroundImage={backgroundImage}
       />
 
       {/* Main Content */}
       <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          Bienvenido, {user}
-        </h1>
-
         {role === 'admin' ? (
           <div>
             <h2 className="text-2xl font-semibold mb-6 text-center">
               Panel de Administración
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <MenuCard
                 title="Gestionar espacios"
                 description="Configura y administra los espacios disponibles"
@@ -101,11 +94,11 @@ const MenuCard = ({ title, description, link, icon }) => {
   return (
     <a
       href={link}
-      className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transform transition-transform hover:-translate-y-1"
+      className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transform transition-transform hover:-translate-y-1 min-h-[215px] flex flex-col justify-between"
     >
       <div className="text-4xl mb-4">{icon}</div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+      <p className="text-gray-600 flex-grow">{description}</p>
     </a>
   );
 };

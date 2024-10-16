@@ -107,7 +107,7 @@ const Header = () => {
               to="/login"
               className="block px-4 py-2 text-white hover:bg-blue-600"
             >
-              Iniciar Seción
+              Iniciar Sesión
             </Link>
           )}
         </div>

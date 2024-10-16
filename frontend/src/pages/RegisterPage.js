@@ -110,7 +110,9 @@ const RegisterPage = () => {
           </div>
           {/* CI */}
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">CI</label>
+            <label className="block mb-1 font-semibold">
+              Cédula de Identidad
+            </label>
             <input
               type="text"
               name="ci"

@@ -14,6 +14,7 @@ import AdminReservationsPage from './pages/AdminReservationsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useDispatch } from 'react-redux';
 import { refreshToken } from './features/auth/authActions';
+import Layout from './components/Layout';
 
 function App() {
   const dispatch = useDispatch();
@@ -31,57 +32,59 @@ function App() {
   }, [dispatch]);
 
   return (
-    <Routes>
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/home" element={<HomePage />} />
+    <Layout>
+      <Routes>
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/home" element={<HomePage />} />
 
-      {/* Rutas públicas */}
-      <Route path="/events" element={<EventsPage />} />
-      <Route path="/events/:id" element={<EventDetailsPage />} />
-      <Route path="/rooms" element={<RoomsPage />} />
-      <Route path="/rooms/:id" element={<RoomDetailsPage />} />
+        {/* Rutas públicas */}
+        <Route path="/events" element={<EventsPage />} />
+        <Route path="/events/:id" element={<EventDetailsPage />} />
+        <Route path="/rooms" element={<RoomsPage />} />
+        <Route path="/rooms/:id" element={<RoomDetailsPage />} />
 
-      {/* Rutas protegidas solo para autenticados */}
-      <Route
-        path="/create-reservation"
-        element={
-          <ProtectedRoute>
-            <CreateReservationPage />
-          </ProtectedRoute>
-        }
-      />
+        {/* Rutas protegidas solo para autenticados */}
+        <Route
+          path="/create-reservation"
+          element={
+            <ProtectedRoute>
+              <CreateReservationPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/my-reservations"
-        element={
-          <ProtectedRoute>
-            <UserReservationsPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/my-reservations"
+          element={
+            <ProtectedRoute>
+              <UserReservationsPage />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Rutas protegidas solo para administradores */}
-      <Route
-        path="/reservations"
-        element={
-          <ProtectedRoute adminOnly={true}>
-            <AdminReservationsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/users"
-        element={
-          <ProtectedRoute adminOnly={true}>
-            <UsersPage />
-          </ProtectedRoute>
-        }
-      />
+        {/* Rutas protegidas solo para administradores */}
+        <Route
+          path="/reservations"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <AdminReservationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <UsersPage />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Ruta para manejar cualquier ruta no válida */}
-      <Route path="*" element={<Navigate to="/home" replace />} />
-    </Routes>
+        {/* Ruta para manejar cualquier ruta no válida */}
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      </Routes>
+    </Layout>
   );
 }
 

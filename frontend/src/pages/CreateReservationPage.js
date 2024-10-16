@@ -1,10 +1,14 @@
+// src/pages/CreateReservationPage.jsx
 import React from 'react';
-import AddEventForm from '../components/AddEventForm'; // Importar el formulario de creación de eventos
+import AddEventForm from '../components/AddEventForm';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import axiosInstance from '../axiosConfig'; // Importar axios configurado
+import axiosInstance from '../axiosConfig';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 
 const CreateReservationPage = () => {
+  const navigate = useNavigate(); // Inicializar el hook de navegación
+
   // Función para manejar la creación del evento y la subida de archivos
   const handleEventCreated = async (event, programFile, agreementFile) => {
     console.log('Evento creado:', event);
@@ -30,16 +34,15 @@ const CreateReservationPage = () => {
         console.error('Error al subir archivos:', error);
       }
     }
+
+    // Redirigir al usuario a la página de inicio después de crear el evento
+    navigate('/');
   };
 
   return (
     <div>
       <Header />
-      <div className="container mx-auto my-8">
-        <h2 className="text-3xl font-bold mb-6 text-center">
-          Solicitar Reserva para Evento
-        </h2>
-        {/* Pasar la función `handleEventCreated` como prop al formulario */}
+      <div className="container mx-auto my-8 px-4">
         <AddEventForm onEventCreated={handleEventCreated} />
       </div>
       <Footer />
