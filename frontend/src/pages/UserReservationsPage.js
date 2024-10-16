@@ -6,6 +6,8 @@ import Footer from '../components/Footer';
 const UserReservationsPage = () => {
   const [events, setEvents] = useState([]);
   const [error, setError] = useState('');
+  const [uploadingProgramId, setUploadingProgramId] = useState(null);
+  const [programFile, setProgramFile] = useState(null);
 
   useEffect(() => {
     axiosInstance
@@ -18,6 +20,38 @@ const UserReservationsPage = () => {
         setError('Error al obtener las reservas.');
       });
   }, []);
+
+  // Manejar el cambio de archivo para el programa
+  const handleProgramFileChange = event => {
+    setProgramFile(event.target.files[0]);
+  };
+
+  // Manejar la subida del archivo del programa
+  const handleUploadProgram = eventId => {
+    if (!programFile) return;
+
+    const formData = new FormData();
+    formData.append('programPath', programFile);
+
+    axiosInstance
+      .post(`/events/${eventId}/upload-files`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        alert('Programa subido exitosamente.');
+        setUploadingProgramId(null); // Limpiar el estado después de subir
+        // Refrescar los datos para mostrar el nuevo archivo
+        axiosInstance.get(`/my-events`).then(response => {
+          setEvents(response.data);
+        });
+      })
+      .catch(error => {
+        console.error('Error al subir el programa:', error);
+        alert('Error al subir el programa. Intente nuevamente.');
+      });
+  };
 
   return (
     <div>
@@ -40,8 +74,8 @@ const UserReservationsPage = () => {
                 <th className="py-2 px-4 border-b">Inicio de la Reserva</th>
                 <th className="py-2 px-4 border-b">Fin de la Reserva</th>
                 <th className="py-2 px-4 border-b">Fecha de Creación</th>
-                <th className="py-2 px-4 border-b">Ruta del Programa</th>
-                {/* Omitiendo el campo de contrato */}
+                <th className="py-2 px-4 border-b">Programa</th>
+                <th className="py-2 px-4 border-b">Contrato</th>
               </tr>
             </thead>
             <tbody>
@@ -71,12 +105,48 @@ const UserReservationsPage = () => {
                   <td className="py-2 px-4 border-b">
                     {event.programPath ? (
                       <a
-                        href={event.programPath}
+                        href={`http://localhost:3000/${event.programPath}`} // Ajusta la URL al puerto del backend
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 underline"
                       >
                         Ver Programa
+                      </a>
+                    ) : (
+                      <>
+                        {uploadingProgramId === event.id ? (
+                          <div>
+                            <input
+                              type="file"
+                              onChange={handleProgramFileChange}
+                            />
+                            <button
+                              onClick={() => handleUploadProgram(event.id)}
+                              className="bg-blue-500 text-white px-2 py-1 rounded"
+                            >
+                              Subir Programa
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setUploadingProgramId(event.id)}
+                            className="bg-blue-500 text-white px-2 py-1 rounded"
+                          >
+                            Cargar Programa
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </td>
+                  <td className="py-2 px-4 border-b">
+                    {event.agreementPath ? (
+                      <a
+                        href={`http://localhost:3000/${event.agreementPath}`} // Ajusta la URL al puerto del backend
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        Ver Contrato
                       </a>
                     ) : (
                       'No disponible'

@@ -7,6 +7,8 @@ const AdminReservationsPage = () => {
   const [events, setEvents] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [uploadingAgreementId, setUploadingAgreementId] = useState(null);
+  const [agreementFile, setAgreementFile] = useState(null);
 
   // Obtener los eventos desde la API
   useEffect(() => {
@@ -22,6 +24,38 @@ const AdminReservationsPage = () => {
         setLoading(false);
       });
   }, []);
+
+  // Manejar el cambio de archivo para el contrato
+  const handleAgreementFileChange = event => {
+    setAgreementFile(event.target.files[0]);
+  };
+
+  // Manejar la subida del archivo de contrato
+  const handleUploadAgreement = eventId => {
+    if (!agreementFile) return;
+
+    const formData = new FormData();
+    formData.append('agreementPath', agreementFile);
+
+    axiosInstance
+      .post(`/events/${eventId}/upload-files`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        alert('Contrato subido exitosamente.');
+        setUploadingAgreementId(null); // Limpiar el estado después de subir
+        // Refrescar los datos para mostrar el nuevo archivo
+        axiosInstance.get('/events').then(response => {
+          setEvents(response.data);
+        });
+      })
+      .catch(error => {
+        console.error('Error al subir el contrato:', error);
+        alert('Error al subir el contrato. Intente nuevamente.');
+      });
+  };
 
   // Función para actualizar el estado del evento
   const handleUpdateStatus = (eventId, newStatus) => {
@@ -83,6 +117,7 @@ const AdminReservationsPage = () => {
                   <th className="py-3 px-6 text-left">Reserva Desde - Hasta</th>
                   <th className="py-3 px-6 text-left">Estado</th>
                   <th className="py-3 px-6 text-left">Programa</th>
+                  <th className="py-3 px-6 text-left">Contrato</th>
                   <th className="py-3 px-6 text-left">Acciones</th>
                 </tr>
               </thead>
@@ -105,18 +140,56 @@ const AdminReservationsPage = () => {
                       {new Date(event.reservationTo).toLocaleString()}
                     </td>
                     <td className="py-3 px-6">{event.status}</td>
+                    {/* Programa */}
                     <td className="py-3 px-6">
                       {event.programPath ? (
                         <a
-                          href={event.programPath}
-                          className="text-blue-500 hover:underline"
+                          href={`http://localhost:3000/${event.programPath}`} // Ajusta la URL al puerto del backend
                           target="_blank"
                           rel="noopener noreferrer"
+                          className="text-blue-600 underline"
                         >
                           Ver Programa
                         </a>
                       ) : (
                         'N/A'
+                      )}
+                    </td>
+                    {/* Contrato */}
+                    <td className="py-3 px-6">
+                      {event.agreementPath ? (
+                        <a
+                          href={`http://localhost:3000/${event.agreementPath}`} // Ajusta la URL al puerto del backend
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 underline"
+                        >
+                          Ver Contrato
+                        </a>
+                      ) : (
+                        <>
+                          {uploadingAgreementId === event.id ? (
+                            <div>
+                              <input
+                                type="file"
+                                onChange={handleAgreementFileChange}
+                              />
+                              <button
+                                onClick={() => handleUploadAgreement(event.id)}
+                                className="bg-blue-500 text-white px-2 py-1 rounded"
+                              >
+                                Subir Contrato
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => setUploadingAgreementId(event.id)}
+                              className="bg-blue-500 text-white px-2 py-1 rounded"
+                            >
+                              Cargar Contrato
+                            </button>
+                          )}
+                        </>
                       )}
                     </td>
                     <td className="py-3 px-6">
