@@ -9,6 +9,7 @@ import {
   FaEnvelope,
   FaCalendarAlt,
   FaInfoCircle,
+  FaTrash,
 } from 'react-icons/fa';
 import Modal from '../components/Modal';
 
@@ -31,6 +32,10 @@ const UserReservationsPage = () => {
   const [selectedReservationDates, setSelectedReservationDates] = useState({});
   const [showDescriptionModal, setShowDescriptionModal] = useState(false);
   const [selectedDescription, setSelectedDescription] = useState('');
+
+  // Estados para la eliminación de reservas
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [reservationToDelete, setReservationToDelete] = useState(null);
 
   useEffect(() => {
     axiosInstance
@@ -137,6 +142,40 @@ const UserReservationsPage = () => {
     setSelectedDescription('');
   };
 
+  // Funciones para manejar la eliminación de reservas
+  const handleShowDeleteModal = reservation => {
+    setReservationToDelete(reservation);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setReservationToDelete(null);
+  };
+
+  const handleDeleteReservation = () => {
+    if (!reservationToDelete) return;
+
+    axiosInstance
+      .delete(`/events/${reservationToDelete.id}`) // Corrección aquí
+      .then(response => {
+        alert('Reserva eliminada exitosamente.');
+        setShowDeleteModal(false);
+        setReservationToDelete(null);
+        // Actualizar el estado de eventos eliminando la reserva
+        setEvents(prevEvents =>
+          prevEvents.filter(event => event.id !== reservationToDelete.id)
+        );
+        setFilteredEvents(prevEvents =>
+          prevEvents.filter(event => event.id !== reservationToDelete.id)
+        );
+      })
+      .catch(error => {
+        console.error('Error al eliminar la reserva:', error);
+        alert('Error al eliminar la reserva. Intente nuevamente.');
+      });
+  };
+
   if (loading) {
     return (
       <div>
@@ -176,6 +215,8 @@ const UserReservationsPage = () => {
                   <th className="py-3 px-6 text-left">Estado</th>
                   <th className="py-3 px-6 text-left">Programa</th>
                   <th className="py-3 px-6 text-left">Contrato</th>
+                  <th className="py-3 px-6 text-left"></th>{' '}
+                  {/* Nueva columna para acciones */}
                 </tr>
               </thead>
               <tbody>
@@ -298,6 +339,15 @@ const UserReservationsPage = () => {
                         'No disponible'
                       )}
                     </td>
+                    {/* Acciones */}
+                    <td className="py-3 px-6">
+                      <button
+                        onClick={() => handleShowDeleteModal(event)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <FaTrash size={20} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -370,6 +420,30 @@ const UserReservationsPage = () => {
           >
             Cerrar
           </button>
+        </Modal>
+      )}
+      {/* Modal para Confirmar Eliminación de Reserva */}
+      {showDeleteModal && (
+        <Modal onClose={handleCloseDeleteModal}>
+          <h2 className="text-xl font-bold mb-4">Confirmar Eliminación</h2>
+          <p>
+            ¿Estás seguro de que deseas eliminar la reserva de{' '}
+            <strong>{reservationToDelete.name}</strong>?
+          </p>
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={handleCloseDeleteModal}
+              className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded mr-2"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleDeleteReservation}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+            >
+              Eliminar
+            </button>
+          </div>
         </Modal>
       )}
     </div>

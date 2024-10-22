@@ -188,7 +188,7 @@ const AdminReservationsPage = () => {
       <Header />
       <div className="container mx-auto my-8 px-4">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-          Administrar Reservas
+          Gestionar Reservas
         </h2>
         {/* Agregar el SearchBar */}
         <div className="mb-4">

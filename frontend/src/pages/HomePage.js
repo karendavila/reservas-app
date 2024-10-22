@@ -54,8 +54,8 @@ const HomePage = () => {
                 icon="📑"
               />
               <MenuCard
-                title="Consultar usuarios"
-                description="Revisa la lista de usuarios registrados"
+                title="Gestionar usuarios"
+                description="Revisa y gestiona la lista de usuarios registrados"
                 link="/users"
                 icon="👤"
               />
@@ -69,7 +69,7 @@ const HomePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
               <MenuCard
                 title="Solicitar reserva"
-                description="Reserva un espacio para tu evento"
+                description="Solicita una reseva para tu evento"
                 link="/create-reservation"
                 icon="📝"
               />

@@ -70,7 +70,10 @@ const EventsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
           {filteredEvents.length > 0 ? (
             filteredEvents.map(event => (
-              <div key={event.id} className="border rounded-lg overflow-hidden">
+              <div
+                key={event.id}
+                className="border rounded-lg overflow-hidden bg-white shadow-md"
+              >
                 <img
                   src={event.image || 'https://via.placeholder.com/600x400'}
                   alt={event.name}

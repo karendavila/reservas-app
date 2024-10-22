@@ -108,7 +108,7 @@ const AdminRoomsPage = () => {
       <Header />
       <div className="container mx-auto my-8 px-4">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-          Administrar Espacios
+          Gestionar Espacios
         </h2>
         {/* Agregar el SearchBar y el botón de añadir sala */}
         <div className="flex justify-between items-center mb-4">

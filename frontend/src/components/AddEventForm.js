@@ -63,7 +63,7 @@ const AddEventForm = ({ onEventCreated }) => {
   return (
     <div className="my-8">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-        Crear Nuevo Evento
+        Solicitar Reserva
       </h2>
       {error && (
         <p className="text-red-500 mb-4 text-center bg-red-100 p-2 rounded">
@@ -71,11 +71,34 @@ const AddEventForm = ({ onEventCreated }) => {
         </p>
       )}
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Sala y Archivos */}
+        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8">
+          <h3 className="text-xl font-semibold mb-4 text-gray-700">Espacio</h3>
+          {/* Sala */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2"></label>
+            <select
+              name="roomId"
+              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.roomId}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Selecciona un espacio</option>
+              {rooms.map(room => (
+                <option key={room.id} value={room.id}>
+                  {room.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
         {/* Información Básica */}
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8">
           <h3 className="text-xl font-semibold mb-4 text-gray-700">
             Información Básica
           </h3>
+
           {/* Nombre del Evento */}
           <div className="mb-4">
             <label className="block text-gray-700 font-medium mb-2">
@@ -211,36 +234,13 @@ const AddEventForm = ({ onEventCreated }) => {
           </div>
         </div>
 
-        {/* Sala y Archivos */}
-        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">Espacio</h3>
-          {/* Sala */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2"></label>
-            <select
-              name="roomId"
-              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={formData.roomId}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Selecciona un espacio</option>
-              {rooms.map(room => (
-                <option key={room.id} value={room.id}>
-                  {room.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
         {/* Botón de Envío */}
         <div className="text-center">
           <button
             type="submit"
             className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded shadow-md transition duration-200"
           >
-            Crear Evento
+            Crear Reserva
           </button>
         </div>
       </form>

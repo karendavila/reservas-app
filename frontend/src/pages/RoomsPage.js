@@ -54,12 +54,24 @@ const RoomsPage = () => {
     // Opcionalmente, mostrar un mensaje de éxito al usuario
   };
 
+  if (loading) {
+    return (
+      <div>
+        <Header />
+        <div className="container mx-auto my-8">
+          <p>Cargando espacios...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Header />
       <HeroSection
         title="Espacios"
-        subtitle="Explora los espacios disponibles"
+        subtitle="Explora los espacios de la UCV"
         backgroundImage={backgroundImage}
       />
       <div className="container mx-auto my-8 px-4">
@@ -91,7 +103,7 @@ const RoomsPage = () => {
               {filteredRooms.map(room => (
                 <div
                   key={room.id}
-                  className="border rounded-lg overflow-hidden"
+                  className="border rounded-lg overflow-hidden bg-white shadow-md flex flex-col"
                 >
                   <img
                     src={
@@ -102,15 +114,17 @@ const RoomsPage = () => {
                     alt={room.name}
                     className="w-full h-48 object-cover"
                   />
-                  <div className="p-4">
+                  <div className="p-4 flex flex-col flex-grow">
                     <h2 className="text-xl font-bold">{room.name}</h2>
                     <p className="mt-2 text-gray-600">{room.description}</p>
-                    <Link
-                      to={`/rooms/${room.id}`}
-                      className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded"
-                    >
-                      Ver Detalles
-                    </Link>
+                    <div className="mt-auto">
+                      <Link
+                        to={`/rooms/${room.id}`}
+                        className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+                      >
+                        Ver Detalles
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ))}
