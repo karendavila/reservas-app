@@ -83,6 +83,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING, // Ruta del archivo del contrato
         allowNull: true,
       },
+      imagePath: {
+        type: DataTypes.STRING,
+        allowNull: true, // Puede ser nulo si no se sube imagen
+      },
     },
     {
       sequelize,

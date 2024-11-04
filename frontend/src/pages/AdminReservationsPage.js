@@ -202,6 +202,7 @@ const AdminReservationsPage = () => {
                 <tr className="bg-gradient-to-r from-blue-700 to-indigo-600 text-white">
                   {/* Columnas actualizadas con menor padding */}
                   <th className="py-2 px-4 text-left">Nombre</th>
+                  <th className="py-2 px-4 text-left">Imagen</th>
                   <th className="py-2 px-4 text-left">Descripción</th>
                   <th className="py-2 px-4 text-left">Capacidad</th>
                   <th className="py-2 px-4 text-left">Costo</th>
@@ -224,6 +225,18 @@ const AdminReservationsPage = () => {
                   >
                     <td className="py-2 px-4 font-semibold text-gray-800">
                       {event.name}
+                    </td>
+                    {/* Mostrar una miniatura de la imagen */}
+                    <td className="py-2 px-4">
+                      {event.imagePath ? (
+                        <img
+                          src={`http://localhost:3000/${event.imagePath}`}
+                          alt={event.name}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      ) : (
+                        'Sin imagen'
+                      )}
                     </td>
                     {/* Mostrar icono en lugar de descripción */}
                     <td className="py-2 px-4">

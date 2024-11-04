@@ -75,7 +75,11 @@ const EventsPage = () => {
                 className="border rounded-lg overflow-hidden bg-white shadow-md"
               >
                 <img
-                  src={event.image || 'https://via.placeholder.com/600x400'}
+                  src={
+                    event.imagePath
+                      ? `http://localhost:3000/${event.imagePath}`
+                      : 'https://via.placeholder.com/600x400'
+                  }
                   alt={event.name}
                   className="w-full h-48 object-cover"
                 />

@@ -36,6 +36,12 @@ const UpdateEventForm = ({ event, onEventUpdated }) => {
   const handleSubmit = e => {
     e.preventDefault();
 
+    const data = new FormData();
+    // Agregar los campos del formulario al FormData
+    Object.keys(formData).forEach(key => {
+      data.append(key, formData[key]);
+    });
+
     axiosInstance
       .put(`/events/${event.id}`, formData)
       .then(response => {

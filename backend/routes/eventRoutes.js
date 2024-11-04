@@ -1,22 +1,49 @@
+// /app/routes/eventRoutes.js
+
 const express = require('express');
 const router = express.Router();
 const eventController = require('../controllers/eventController');
 const protect = require('../middlewares/authMiddleware'); // Middleware de autenticación
 
-const upload = require('../middlewares/eventFileUploadMiddleware');
+// Renombrar las importaciones para evitar conflictos
+const uploadFiles = require('../middlewares/eventFileUploadMiddleware');
+const uploadImages = require('../middlewares/eventImageUploadMiddleware');
 
 // Rutas para el CRUD
-router.post('/events', protect, eventController.createEvent); // Crear un evento
-router.get('/events', eventController.getAllEvents); // Obtener todos los eventos
-router.get('/events/:eventId', eventController.getEventById); // Obtener un evento por ID
-router.put('/events/:eventId', protect, eventController.updateEvent); // Actualizar un evento por ID
-router.delete('/events/:eventId', protect, eventController.deleteEvent); // Eliminar un evento por ID
-router.get('/my-events', protect, eventController.getEventsByUser); // Obtener eventos por usuario
+
+// Crear un nuevo evento con imagen
+router.post(
+  '/events',
+  protect, // Usar 'protect' en lugar de 'authMiddleware'
+  uploadImages.single('imageFile'), // Nombre del campo de imagen en el formulario
+  eventController.createEvent
+);
+
+// Obtener todos los eventos
+router.get('/events', eventController.getAllEvents);
+
+// Obtener un evento por ID
+router.get('/events/:eventId', eventController.getEventById);
+
+// Actualizar un evento existente con imagen
+router.put(
+  '/events/:eventId',
+  protect,
+  uploadImages.single('imageFile'), // Nombre del campo de imagen en el formulario
+  eventController.updateEvent
+);
+
+// Eliminar un evento por ID
+router.delete('/events/:eventId', protect, eventController.deleteEvent);
+
+// Obtener eventos por usuario
+router.get('/my-events', protect, eventController.getEventsByUser);
 
 // Rutas para la subida de archivos después de la creación del evento
 router.post(
   '/events/:eventId/upload-files',
-  upload.fields([
+  protect, // Asegurar que la ruta esté protegida
+  uploadFiles.fields([
     { name: 'programPath', maxCount: 1 },
     { name: 'agreementPath', maxCount: 1 },
   ]),

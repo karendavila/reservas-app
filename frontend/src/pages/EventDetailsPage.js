@@ -88,83 +88,82 @@ const EventDetailsPage = () => {
           <UpdateEventForm event={event} onEventUpdated={handleEventUpdated} />
         ) : (
           <>
-            {/* Card de Detalles del Evento */}
-            <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-              <div className="flex flex-col md:flex-row">
-                <div className="md:w-1/2">
-                  <img
-                    src={
-                      event.imagePath
-                        ? `http://localhost:3000/${event.imagePath}`
-                        : 'https://via.placeholder.com/600x400'
-                    }
-                    alt={event.name}
-                    className="w-full h-auto object-cover rounded"
-                  />
-                </div>
-                <div className="md:w-1/2 md:pl-8 mt-4 md:mt-0">
-                  <h2 className="text-3xl font-bold mb-4">{event.name}</h2>
-                  <p className="mb-4">{event.description}</p>
-                  <ul className="mb-4 space-y-2">
-                    <li>
-                      <strong>Capacidad:</strong> {event.capacity}
-                    </li>
-                    <li>
-                      <strong>Costo:</strong> {event.cost}
-                    </li>
-                    <li>
-                      <strong>Contacto:</strong> {event.contact}
-                    </li>
-                    <li>
-                      <strong>Inicio del Evento:</strong>{' '}
-                      {new Date(event.eventFrom).toLocaleString()}
-                    </li>
-                    <li>
-                      <strong>Fin del Evento:</strong>{' '}
-                      {new Date(event.eventTo).toLocaleString()}
-                    </li>
-                  </ul>
-                </div>
+            {/* Sección de Detalles del Evento */}
+            <div className="flex flex-col md:flex-row mb-8">
+              {/* Contenedor de la Imagen del Evento */}
+              <div className="w-full md:w-1/2 h-64 overflow-hidden rounded">
+                <img
+                  src={
+                    event.imagePath
+                      ? `http://localhost:3000/${event.imagePath}`
+                      : 'https://via.placeholder.com/600x400'
+                  }
+                  alt={event.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Detalles del Evento */}
+              <div className="w-full md:w-1/2 md:pl-8 mt-4 md:mt-0">
+                <h2 className="text-3xl font-bold mb-4">{event.name}</h2>
+                <p className="mb-4">{event.description}</p>
+                <ul className="mb-4 space-y-2">
+                  <li>
+                    <strong>Capacidad:</strong> {event.capacity}
+                  </li>
+                  <li>
+                    <strong>Costo:</strong> {event.cost}
+                  </li>
+                  <li>
+                    <strong>Contacto:</strong> {event.contact}
+                  </li>
+                  <li>
+                    <strong>Inicio del Evento:</strong>{' '}
+                    {new Date(event.eventFrom).toLocaleString()}
+                  </li>
+                  <li>
+                    <strong>Fin del Evento:</strong>{' '}
+                    {new Date(event.eventTo).toLocaleString()}
+                  </li>
+                </ul>
               </div>
             </div>
 
-            {/* Card de Sala Asociada */}
+            {/* Sección de Sala Asociada */}
             {event.room && (
-              <div className="bg-white shadow-md rounded-lg p-6">
-                <h3 className="text-2xl font-semibold mb-4">Sala Asociada</h3>
-                <div className="flex flex-col md:flex-row items-center">
-                  <div className="md:w-1/3">
-                    <img
-                      src={
-                        event.room.imagePath
-                          ? `http://localhost:3000/${event.room.imagePath}`
-                          : 'https://via.placeholder.com/150x100'
-                      }
-                      alt={event.room.name}
-                      className="w-full h-auto object-cover rounded mb-4 md:mb-0"
-                    />
-                  </div>
-                  <div className="md:w-2/3 md:pl-6">
-                    <h4 className="text-xl font-bold">{event.room.name}</h4>
-                    <p className="text-gray-600 mb-2">
-                      {event.room.description}
-                    </p>
-                    <p className="text-gray-600">
-                      <strong>Capacidad:</strong> {event.room.capacity}
-                    </p>
-                    <p className="text-gray-600">
-                      <strong>Costo:</strong> {event.room.cost}
-                    </p>
-                    <p className="text-gray-600">
-                      <strong>Contacto:</strong> {event.room.contact}
-                    </p>
-                    <Link
-                      to={`/rooms/${event.room.id}`}
-                      className="text-blue-600 hover:underline mt-2 inline-block"
-                    >
-                      Ver Detalles de la Sala
-                    </Link>
-                  </div>
+              <div className="flex flex-col md:flex-row mb-8">
+                {/* Contenedor de la Imagen de la Sala */}
+                <div className="w-full md:w-1/3 h-32 overflow-hidden rounded mb-4 md:mb-0">
+                  <img
+                    src={
+                      event.room.imagePath
+                        ? `${process.env.REACT_APP_BACKEND_URL}/${event.room.imagePath}`
+                        : 'https://via.placeholder.com/150x100'
+                    }
+                    alt={event.room.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {/* Detalles de la Sala */}
+                <div className="w-full md:w-2/3 md:pl-6">
+                  <h3 className="text-2xl font-semibold mb-2">
+                    {event.room.name}
+                  </h3>
+                  <p className="text-gray-600 mb-2">{event.room.description}</p>
+                  <p className="text-gray-600">
+                    <strong>Capacidad:</strong> {event.room.capacity}
+                  </p>
+                  <p className="text-gray-600">
+                    <strong>Costo:</strong> {event.room.cost}
+                  </p>
+                  <p className="text-gray-600">
+                    <strong>Contacto:</strong> {event.room.contact}
+                  </p>
+                  <Link
+                    to={`/rooms/${event.room.id}`}
+                    className="text-blue-600 hover:underline mt-2 inline-block"
+                  >
+                    Ver Detalles de la Sala
+                  </Link>
                 </div>
               </div>
             )}

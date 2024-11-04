@@ -18,7 +18,7 @@ const UserReservationsPage = () => {
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [error, setError] = useState('');
   const [uploadingProgramId, setUploadingProgramId] = useState(null);
-  const [programFile, setProgramFile] = useState(null);
+  const [programFiles, setProgramFiles] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -68,16 +68,20 @@ const UserReservationsPage = () => {
   };
 
   // Manejar el cambio de archivo para el programa
-  const handleProgramFileChange = event => {
-    setProgramFile(event.target.files[0]);
+  const handleProgramFileChange = (event, eventId) => {
+    setProgramFiles(prevState => ({
+      ...prevState,
+      [eventId]: event.target.files[0],
+    }));
   };
 
   // Manejar la subida del archivo del programa
   const handleUploadProgram = eventId => {
-    if (!programFile) return;
+    const selectedFile = programFiles[eventId];
+    if (!selectedFile) return;
 
     const formData = new FormData();
-    formData.append('programPath', programFile);
+    formData.append('programPath', selectedFile);
 
     axiosInstance
       .post(`/events/${eventId}/upload-files`, formData, {
@@ -88,7 +92,10 @@ const UserReservationsPage = () => {
       .then(response => {
         alert('Programa subido exitosamente.');
         setUploadingProgramId(null);
-        setProgramFile(null);
+        setProgramFiles(prevState => ({
+          ...prevState,
+          [eventId]: null,
+        }));
         // Refrescar los datos para mostrar el nuevo archivo
         axiosInstance.get(`/my-events`).then(response => {
           setEvents(response.data);
@@ -206,6 +213,7 @@ const UserReservationsPage = () => {
               <thead>
                 <tr className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                   <th className="py-3 px-6 text-left">Nombre</th>
+                  <th className="py-2 px-4 text-left">Imagen</th>
                   <th className="py-3 px-6 text-left">Descripción</th>
                   <th className="py-3 px-6 text-left">Capacidad</th>
                   <th className="py-3 px-6 text-left">Costo</th>
@@ -215,7 +223,7 @@ const UserReservationsPage = () => {
                   <th className="py-3 px-6 text-left">Estado</th>
                   <th className="py-3 px-6 text-left">Programa</th>
                   <th className="py-3 px-6 text-left">Contrato</th>
-                  <th className="py-3 px-6 text-left"></th>{' '}
+                  <th className="py-3 px-6 text-left">X</th>
                   {/* Nueva columna para acciones */}
                 </tr>
               </thead>
@@ -229,6 +237,18 @@ const UserReservationsPage = () => {
                   >
                     <td className="py-3 px-6 font-semibold text-gray-800">
                       {event.name}
+                    </td>
+                    {/* Mostrar una miniatura de la imagen */}
+                    <td className="py-2 px-4">
+                      {event.imagePath ? (
+                        <img
+                          src={`http://localhost:3000/${event.imagePath}`}
+                          alt={event.name}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      ) : (
+                        'Sin imagen'
+                      )}
                     </td>
                     {/* Mostrar icono en lugar de descripción */}
                     <td className="py-3 px-6">
@@ -303,15 +323,19 @@ const UserReservationsPage = () => {
                             <div className="flex items-center">
                               <input
                                 type="file"
-                                onChange={handleProgramFileChange}
+                                onChange={e =>
+                                  handleProgramFileChange(e, event.id)
+                                }
                                 className="text-sm"
                               />
-                              <button
-                                onClick={() => handleUploadProgram(event.id)}
-                                className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded ml-2 text-sm"
-                              >
-                                Subir
-                              </button>
+                              {programFiles[event.id] && (
+                                <button
+                                  onClick={() => handleUploadProgram(event.id)}
+                                  className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded ml-2 text-sm"
+                                >
+                                  Subir
+                                </button>
+                              )}
                             </div>
                           ) : (
                             <button

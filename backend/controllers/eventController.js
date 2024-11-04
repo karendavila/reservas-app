@@ -1,5 +1,6 @@
 const { Event, User } = require('../models');
 const upload = require('../middlewares/eventFileUploadMiddleware');
+const path = require('path');
 
 // Crear un nuevo evento (Create)
 exports.createEvent = async (req, res) => {
@@ -9,6 +10,12 @@ exports.createEvent = async (req, res) => {
       status: Event.STATUS.PENDING,
       userId: req.user.id,
     };
+
+    if (req.file) {
+      // Si se subió una imagen, agregar la ruta a los datos
+      eventData.imagePath = req.file.path;
+    }
+
     const newEvent = await Event.create(eventData);
     res.status(201).json(newEvent); // Responder con el nuevo evento creado
   } catch (error) {
@@ -53,6 +60,11 @@ exports.updateEvent = async (req, res) => {
     }
     if (!event) {
       return res.status(404).json({ error: 'Evento no encontrado.' });
+    }
+
+    if (req.file) {
+      // Si se subió una nueva imagen, actualizar la ruta
+      req.body.imagePath = req.file.path;
     }
 
     await event.update(req.body); // Actualizar los campos con los nuevos datos

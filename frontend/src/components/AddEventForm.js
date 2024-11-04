@@ -15,10 +15,10 @@ const AddEventForm = ({ onEventCreated }) => {
     reservationTo: '',
     roomId: '',
   });
-  const [programFile, setProgramFile] = useState(null);
-  const [agreementFile, setAgreementFile] = useState(null);
+  const [imageFile, setImageFile] = useState(null); // Estado para la imagen
   const [error, setError] = useState('');
   const [rooms, setRooms] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Estado para manejar el envío
 
   // Fetch rooms to populate the dropdown
   useEffect(() => {
@@ -37,26 +37,60 @@ const AddEventForm = ({ onEventCreated }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFileChange = e => {
-    const { name, files } = e.target;
-    if (name === 'programFile') {
-      setProgramFile(files[0]);
-    } else if (name === 'agreementFile') {
-      setAgreementFile(files[0]);
-    }
+  const handleImageChange = e => {
+    const file = e.target.files[0];
+    setImageFile(file);
+    // Optional: Implement previsualización si lo deseas
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setIsSubmitting(true); // Iniciar indicador de carga
+
+    const data = new FormData();
+    // Agregar los campos del formulario al FormData
+    Object.keys(formData).forEach(key => {
+      data.append(key, formData[key]);
+    });
+    // Agregar el archivo de imagen
+    if (imageFile) {
+      data.append('imageFile', imageFile); // Nombre consistente con el backend
+    }
 
     try {
-      const response = await axiosInstance.post('/events', formData);
+      const response = await axiosInstance.post('/events', data, {
+        // Enviar 'data' en lugar de 'formData'
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       console.log('Evento creado:', response.data);
-      // Llamar a la función `onEventCreated` y pasarle los archivos
-      onEventCreated(response.data, programFile, agreementFile);
+      // Llamar a la función `onEventCreated` y pasarle los datos del evento
+      onEventCreated(response.data);
+      // Opcional: Resetear el formulario después de la creación exitosa
+      setFormData({
+        name: '',
+        description: '',
+        capacity: '',
+        cost: '',
+        contact: '',
+        eventFrom: '',
+        eventTo: '',
+        reservationFrom: '',
+        reservationTo: '',
+        roomId: '',
+      });
+      setImageFile(null);
+      setError('');
     } catch (error) {
       console.error('Error creating event:', error);
-      setError('Error al crear el evento. Por favor, intente nuevamente.');
+      const errorMessage =
+        error.response?.data?.error ||
+        error.response?.data?.errors?.join(', ') ||
+        'Error al crear el evento. Por favor, intente nuevamente.';
+      setError(errorMessage);
+    } finally {
+      setIsSubmitting(false); // Finalizar indicador de carga
     }
   };
 
@@ -70,13 +104,19 @@ const AddEventForm = ({ onEventCreated }) => {
           {error}
         </p>
       )}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Sala y Archivos */}
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6"
+        encType="multipart/form-data"
+      >
+        {/* Sala y Espacio */}
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8">
           <h3 className="text-xl font-semibold mb-4 text-gray-700">Espacio</h3>
           {/* Sala */}
           <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2"></label>
+            <label className="block text-gray-700 font-medium mb-2">
+              Selecciona un Espacio
+            </label>
             <select
               name="roomId"
               className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -234,13 +274,47 @@ const AddEventForm = ({ onEventCreated }) => {
           </div>
         </div>
 
+        {/* Imagen del Evento */}
+        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8">
+          <h3 className="text-xl font-semibold mb-4 text-gray-700">
+            Imagen del Evento
+          </h3>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              Imagen del Evento
+            </label>
+            <input
+              type="file"
+              name="imageFile" // Cambiado de 'image' a 'imageFile' para coincidir con el backend
+              accept="image/*"
+              onChange={handleImageChange}
+              className="w-full"
+              required // Opcional: Haz que este campo sea obligatorio
+            />
+          </div>
+          {/* Opcional: Previsualización de la Imagen */}
+          {imageFile && (
+            <div className="mt-4">
+              <p className="text-gray-700 font-medium mb-2">
+                Previsualización de la Imagen:
+              </p>
+              <img
+                src={URL.createObjectURL(imageFile)}
+                alt="Previsualización"
+                className="w-32 h-32 object-cover rounded"
+              />
+            </div>
+          )}
+        </div>
+
         {/* Botón de Envío */}
         <div className="text-center">
           <button
             type="submit"
             className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded shadow-md transition duration-200"
+            disabled={isSubmitting} // Deshabilitar el botón mientras se envía
           >
-            Crear Reserva
+            {isSubmitting ? 'Creando...' : 'Crear Reserva'}
           </button>
         </div>
       </form>
