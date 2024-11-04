@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../axiosConfig';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux'; // Para obtener el rol del usuario desde Redux
+//import { useSelector } from 'react-redux'; // Para obtener el rol del usuario desde Redux
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SearchBar from '../components/SearchBar';
@@ -15,7 +15,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
 
   // Obtener el rol del usuario desde Redux
-  const { role } = useSelector(state => state.auth);
+  //const { role } = useSelector(state => state.auth);
 
   // Obtener eventos de la API y filtrar solo los eventos aprobados
   useEffect(() => {

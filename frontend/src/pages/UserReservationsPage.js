@@ -37,6 +37,10 @@ const UserReservationsPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [reservationToDelete, setReservationToDelete] = useState(null);
 
+  // Estados para el modal de imagen
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+
   useEffect(() => {
     axiosInstance
       .get(`/my-events`)
@@ -183,6 +187,12 @@ const UserReservationsPage = () => {
       });
   };
 
+  // Manejador de clic en la imagen para mostrar el modal
+  const handleImageClick = imagePath => {
+    setSelectedImage(`http://localhost:3000/${imagePath}`);
+    setShowImageModal(true);
+  };
+
   if (loading) {
     return (
       <div>
@@ -244,7 +254,8 @@ const UserReservationsPage = () => {
                         <img
                           src={`http://localhost:3000/${event.imagePath}`}
                           alt={event.name}
-                          className="w-16 h-16 object-cover rounded"
+                          className="w-16 h-16 object-cover rounded cursor-pointer hover:opacity-75 transition-opacity duration-200"
+                          onClick={() => handleImageClick(event.imagePath)}
                         />
                       ) : (
                         'Sin imagen'
@@ -466,6 +477,24 @@ const UserReservationsPage = () => {
               className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
             >
               Eliminar
+            </button>
+          </div>
+        </Modal>
+      )}
+      {/* Modal para mostrar la imagen ampliada */}
+      {showImageModal && (
+        <Modal onClose={() => setShowImageModal(false)}>
+          <div className="flex flex-col items-center">
+            <img
+              src={selectedImage}
+              alt="Imagen ampliada"
+              className="max-w-full max-h-screen object-contain rounded"
+            />
+            <button
+              onClick={() => setShowImageModal(false)}
+              className="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+            >
+              Cerrar
             </button>
           </div>
         </Modal>
